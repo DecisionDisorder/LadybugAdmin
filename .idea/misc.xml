@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/drawable/edge.xml" value="0.328" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/drawable/round_button.xml" value="0.328" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/drawable/round_outline_button.xml" value="0.343" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/drawable/state_background.xml" value="0.328" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/drawable/state_background_active.xml" value="0.328" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/drawable/state_background_unactive.xml" value="0.328" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/drawable/underbar_button.xml" value="0.328" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/drawable/white_edge.xml" value="0.3465" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/font/font.xml" value="0.3963541666666667" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/activity_admin_main.xml" value="0.36614583333333334" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/activity_bus_location.xml" value="0.25" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/activity_driver.xml" value="0.33" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/activity_laptop_size.xml" value="0.36614583333333334" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/activity_login.xml" value="0.276268115942029" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/activity_mng_info.xml" value="0.33" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/activity_notice_mng.xml" value="0.33" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/activity_notice_write.xml" value="0.36614583333333334" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/activity_notice_writting.xml" value="0.36614583333333334" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/driver_code_layout.xml" value="0.36614583333333334" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/fragment_notice_list.xml" value="0.36614583333333334" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/info_code_layout.xml" value="0.3770833333333333" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/notice_group_layout.xml" value="0.3515625" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
