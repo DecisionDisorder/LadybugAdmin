@@ -19,6 +19,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class DriverActivity extends AppCompatActivity {
     private TextView locationTextView;
 
@@ -29,6 +32,8 @@ public class DriverActivity extends AppCompatActivity {
 
     LocationListener locationListener;
     private LocationManager locationManager = null;
+
+    private StationDataManager stationDataManager;
 
     private final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 1001;
 
@@ -53,6 +58,8 @@ public class DriverActivity extends AppCompatActivity {
         });
 
         permissionCheckGps();
+        stationDataManager.init(this);
+        test();
     }
 
     private void setOperation(boolean active) {
@@ -74,6 +81,7 @@ public class DriverActivity extends AppCompatActivity {
             changeStatusButton.setTextColor(Color.BLACK);
             stopGetLocation();
         }
+        busNumberSpinner.setEnabled(!active);
     }
 
     private void permissionCheckGps() {
@@ -140,8 +148,21 @@ public class DriverActivity extends AppCompatActivity {
             String provider = location.getProvider();
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
-            double altitude = location.getAltitude();
-            locationTextView.setText("위치정보 : " + provider + "\n" + "위도 : " + longitude + "\n" + "경도 : " + latitude + "\n" + "고도 : " + altitude);
+            locationTextView.setText("위치정보 : " + provider + "\n" + "위도 : " + longitude + "\n" + "경도 : " + latitude + "\n");
         }
     };
+
+    private void test() {
+        //Coordinate pos1 = new Coordinate(37.453530, 127.134233);
+        //Coordinate pos2 = new Coordinate(37.453099, 127.133622);
+        //System.out.println(Coordinate.getDistance(pos1, pos2));
+        Location loc1 = new Location("A");
+        loc1.setLatitude(37.233299);
+        loc1.setLongitude(127.062446);
+        Location loc2 = new Location("B");
+        loc2.setLatitude(37.232849);
+        loc2.setLongitude(127.062335);
+        System.out.println(loc1.distanceTo(loc2));
+    }
+
 }

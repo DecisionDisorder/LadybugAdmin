@@ -14,6 +14,7 @@
     </string-array>
     <string name="bus_number">Bus Number</string>
     <string name="current_state">Current State</string>
+    <string name="current_location">Current Location</string>
     <string name="in_operation">In Operation</string>
     <string name="stopped">Stopped</string>
     <string name="start_driving">Start Driving</string>
