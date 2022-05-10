@@ -49,10 +49,12 @@ public class StationDataManager {
 
             for(int i = 0; i < stationArray.length(); i++)
             {
+                JSONObject stationObj = stationArray.getJSONObject(i);
+
                 stations[i] = new Station();
-                stations[i].setName(jsonObject.getString("name"));
-                stations[i].setLatitude(jsonObject.getDouble("latitude"));
-                stations[i].setLongitude(jsonObject.getDouble("longitude"));
+                stations[i].setName(stationObj.getString("name"));
+                stations[i].setLatitude(stationObj.getDouble("latitude"));
+                stations[i].setLongitude(stationObj.getDouble("longitude"));
                 stations[i].setIndex(i * 2);
             }
             return true;
@@ -61,5 +63,12 @@ public class StationDataManager {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public String[] getStationNameArray() {
+        String[] list = new String[stations.length];
+        for(int i = 0; i < list.length; i++)
+            list[i] = stations[i].getName();
+        return list;
     }
 }

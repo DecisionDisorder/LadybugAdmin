@@ -7,25 +7,30 @@ public class BusLocator {
 
     private static StationDataManager stationDataManager = null;
 
-    public BusLocator(int startIndex) {
-        currentIndex = startIndex;
-    }
+    public static int ERROR_RANGE = 5;
 
-    public BusLocator(int startIndex, StationDataManager pStationDataManager) {
-        currentIndex = startIndex;
+    public BusLocator(StationDataManager pStationDataManager) {
         if(stationDataManager == null)
             stationDataManager = pStationDataManager;
     }
 
-    private boolean isNearStation(Location currentLocation) {
+    public void initStartIndex(int startIndex) {
+        currentIndex = startIndex;
+    }
+
+    public double getDistance (Location currentLocation) {
         Station station = stationDataManager.stations[(currentIndex + 1) / 2];
 
         Location stationLocation = new Location(station.getName());
         stationLocation.setLatitude(station.getLatitude());
         stationLocation.setLongitude(station.getLongitude());
-        double distance = currentLocation.distanceTo(stationLocation);
+        return currentLocation.distanceTo(stationLocation);
+    }
 
-        if(distance < 5) {
+    private boolean isNearStation(Location currentLocation) {
+        double distance = getDistance(currentLocation);
+
+        if(distance < ERROR_RANGE) {
             return true;
         }
         else {
@@ -35,7 +40,7 @@ public class BusLocator {
 
     public void setCurrentIndex(Location currentLocation) {
         boolean isNear = isNearStation(currentLocation);
-        // currentIndex가 홀수이면 정류장 사이에 있다는 뜻
+        // current Index 가 홀수이면 정류장 사이에 있다는 뜻
         if(isNear && currentIndex % 2 == 1) {
             currentIndex++;
         }
@@ -50,5 +55,21 @@ public class BusLocator {
 
     public int getCurrentIndex() {
         return currentIndex;
+    }
+
+    public int getIndexByName(String name) {
+        for(int i = 0; i < stationDataManager.stations.length; i++) {
+            if(stationDataManager.stations[i].getName().equals(name))
+                return i * 2;
+        }
+        return -1;
+    }
+
+    public String getCurrentStationName() {
+        return stationDataManager.stations[currentIndex / 2].getName();
+    }
+
+    public String getNextStationName() {
+        return stationDataManager.stations[(currentIndex + 1) / 2].getName();
     }
 }

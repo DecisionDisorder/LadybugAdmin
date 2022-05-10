@@ -14,7 +14,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,12 +29,19 @@ public class DriverActivity extends AppCompatActivity {
 
     private boolean isInOperation = false;
     private Spinner busNumberSpinner;
+    private TextView currentLocationTextView;
     private TextView currentStateTextView;
     private Button changeStatusButton;
 
     LocationListener locationListener;
     private LocationManager locationManager = null;
 
+    private LinearLayout startStationContainer;
+    private LinearLayout currentLocationContainer;
+    private Spinner startStationSpinner;
+    private boolean isPassedStartingPoint;
+
+    private BusLocator busLocator;
     private StationDataManager stationDataManager;
 
     private final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 1001;
@@ -47,6 +56,11 @@ public class DriverActivity extends AppCompatActivity {
         busNumberSpinner = findViewById(R.id.busNumberSpinner);
         currentStateTextView = findViewById(R.id.currentStateTextView);
         changeStatusButton = findViewById(R.id.changeStatusButton);
+        currentLocationTextView = findViewById(R.id.currentLocationTextView);
+
+        startStationContainer = findViewById(R.id.startStationContainer);
+        currentLocationContainer = findViewById(R.id.currentLocationContainer);
+        startStationSpinner = findViewById(R.id.startStationSpinner);
 
         setOperation(false);
 
@@ -58,13 +72,35 @@ public class DriverActivity extends AppCompatActivity {
         });
 
         permissionCheckGps();
+        stationDataManager = new StationDataManager();
         stationDataManager.init(this);
-        test();
+
+        busLocator = new BusLocator(stationDataManager);
+        initStartStationSpinner();
+    }
+
+    private void initStartStationSpinner() {
+        String[] items = stationDataManager.getStationNameArray();
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, items);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        startStationSpinner.setAdapter(adapter);
     }
 
     private void setOperation(boolean active) {
         isInOperation = active;
         if (isInOperation) {
+            /* Swap StartStation and CurrentLocation */
+            startStationContainer.setVisibility(View.GONE);
+            currentLocationContainer.setVisibility(View.VISIBLE);
+
+            /* Initialize with starting station information */
+            String stationName = startStationSpinner.getSelectedItem().toString();
+            currentLocationTextView.setText("Going to " + stationName);
+            busLocator.initStartIndex(busLocator.getIndexByName(stationName));
+            isPassedStartingPoint = false;
+
+            /* Change design of current state and change status button */
             currentStateTextView.setBackground(getResources().getDrawable(R.drawable.state_background_active));
             currentStateTextView.setText(getResources().getString(R.string.in_operation));
             currentStateTextView.setTextColor(Color.BLACK);
@@ -73,6 +109,11 @@ public class DriverActivity extends AppCompatActivity {
             changeStatusButton.setTextColor(Color.WHITE);
             startGetLocation();
         } else {
+            /* Swap StartStation and CurrentLocation */
+            startStationContainer.setVisibility(View.VISIBLE);
+            currentLocationContainer.setVisibility(View.GONE);
+
+            /* Change design of current state and change status button */
             currentStateTextView.setBackground(getResources().getDrawable(R.drawable.state_background_unactive));
             currentStateTextView.setText(getResources().getString(R.string.stopped));
             currentStateTextView.setTextColor(Color.WHITE);
@@ -123,12 +164,10 @@ public class DriverActivity extends AppCompatActivity {
 
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if(location != null) {
-            String provider = location.getProvider();
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
-            double altitude = location.getAltitude();
 
-            locationTextView.setText("위치정보 : " + provider + "\n" + "위도 : " + longitude + "\n" + "경도 : " + latitude + "\n" + "고도 : " + altitude);
+            locationTextView.setText( "위도 : " + latitude+ ", " + "경도 : " + longitude);
 
         }
         locationListener = gpsLocationListener;
@@ -145,12 +184,30 @@ public class DriverActivity extends AppCompatActivity {
     final LocationListener gpsLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(@NonNull Location location) {
-            String provider = location.getProvider();
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
-            locationTextView.setText("위치정보 : " + provider + "\n" + "위도 : " + longitude + "\n" + "경도 : " + latitude + "\n");
+            locationTextView.setText( "위도 : " + latitude+ ", " + "경도 : " + longitude);
+            setCurrentLocation(location);
         }
     };
+
+    private void setCurrentLocation(Location currentLocation) {
+        if(!isPassedStartingPoint) {
+            double dist = busLocator.getDistance(currentLocation);
+            if(dist < BusLocator.ERROR_RANGE) {
+                currentLocationTextView.setText(busLocator.getCurrentStationName());
+                isPassedStartingPoint = true;
+            }
+        }
+        else {
+            busLocator.setCurrentIndex(currentLocation);
+            int currentIndex = busLocator.getCurrentIndex();
+            if(currentIndex % 2 == 0)
+                currentLocationTextView.setText(busLocator.getCurrentStationName());
+            else
+                currentLocationTextView.setText(busLocator.getCurrentStationName() + " → " + busLocator.getNextStationName());
+        }
+    }
 
     private void test() {
         //Coordinate pos1 = new Coordinate(37.453530, 127.134233);
