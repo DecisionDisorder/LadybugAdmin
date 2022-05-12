@@ -7,37 +7,58 @@ import android.media.Image;
 import android.os.Bundle;
 import android.text.Layout;
 import android.util.TypedValue;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class BusLocationActivity extends AppCompatActivity {
+
+    private BusLineView busLineView;
+    private int i = 0; //TEST
+
+    private BusView busView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bus_location);
 
-        BusLineView view = new BusLineView(this);
+        busLineView = new BusLineView(this);
         FrameLayout layout = findViewById(R.id.busLineContainer);
-        layout.addView(view);
+        layout.addView(busLineView);
 
-        drawBus();
+        busView = drawBus(i);
+
+        Button test = findViewById(R.id.button);
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                i++;
+                if(i >= busLineView.getNames().length * 2 - 1)
+                    i = 0;
+                busView.updateLocation(i);
+            }
+        });
     }
 
-    private void drawBus()
+    private BusView drawBus(int locIndex)
     {
         FrameLayout layout = findViewById(R.id.busDrawContainer);
-        ImageView busImg = new ImageView(this);
 
-        int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics());
-        FrameLayout.LayoutParams param = new FrameLayout.LayoutParams(size, size);
+        BusView busView = new BusView(this, busLineView);
 
-        busImg.setImageResource(R.drawable.ladybug_bus);
-        busImg.setLayoutParams(param);
-        busImg.setX(80);
-        busImg.setY(0);
+        layout.addView(busView);
+        busView.updateLocation(locIndex);
 
-        layout.addView(busImg);
+        return busView;
     }
+
+
 }

@@ -14,6 +14,33 @@ import androidx.annotation.Nullable;
 
 public class BusLineView extends View {
 
+    private String[] names = {"정문", "교육대학원", "학생회관", "기숙사", "학생회관", "중앙도서관", "예술체육대학", "글로벌센터", "정문"};
+    private int posX = 150;
+    private int startY = 50;
+    private int marginBottom = 100;
+    private int middleIndex = 3;
+    private int lineHeight = 0;
+
+    public int getPosX() {
+        return posX;
+    }
+
+    public int getStartY() {
+        return startY;
+    }
+
+    public int getMiddleIndex() {
+        return middleIndex;
+    }
+
+    public int getLineHeight() {
+        return lineHeight;
+    }
+
+    public String[] getNames() {
+        return names;
+    }
+
     Typeface tf;
 
     public BusLineView(Context context){
@@ -28,27 +55,23 @@ public class BusLineView extends View {
     protected void onDraw(Canvas canvas){
         super.onDraw(canvas);
 
-        int posX = 150;
-        int startY = 50;
-        int marginBottom = 100;
-        int h = canvas.getHeight() - marginBottom - startY;
-        int middleIndex = 3;
-        int length = 8;
-        String[] names = {"정문", "교육대학원", "학생회관", "기숙사", "중앙도서관", "예술체육대학", "글로벌센터", "정문"};
+        lineHeight = canvas.getHeight() - marginBottom - startY;
+
+        int length = names.length;
 
         tf = Typeface.createFromAsset(getContext().getAssets(), "godo_m.TTF");
 
         drawBaseLine(canvas, posX, startY);
         drawBigStation(canvas, posX, startY, names[0]);
         for(int i = 1; i < middleIndex; i++)
-            drawSmallStation(canvas, posX, getY(i, middleIndex, length, h, startY), names[i]);
-        drawBigStation(canvas, posX, getY(middleIndex, middleIndex, length, h, startY), names[middleIndex]);
+            drawSmallStation(canvas, posX, getY(i, middleIndex, length, lineHeight, startY), names[i]);
+        drawBigStation(canvas, posX, getY(middleIndex, middleIndex, length, lineHeight, startY), names[middleIndex]);
         for(int i = middleIndex + 1; i < length - 1; i++)
-            drawSmallStation(canvas, posX, getY(i, middleIndex, length, h, startY), names[i]);
-        drawBigStation(canvas, posX, getY(length - 1, middleIndex, length, h, startY), names[length - 1]);
+            drawSmallStation(canvas, posX, getY(i, middleIndex, length, lineHeight, startY), names[i]);
+        drawBigStation(canvas, posX, getY(length - 1, middleIndex, length, lineHeight, startY), names[length - 1]);
     }
 
-    private int getY(int index, int middleIndex, int length, int height, int startY) {
+    public int getY(int index, int middleIndex, int length, int height, int startY) {
         if(index < middleIndex)
         {
             return (int)((float)index / middleIndex * height / 2) + startY;

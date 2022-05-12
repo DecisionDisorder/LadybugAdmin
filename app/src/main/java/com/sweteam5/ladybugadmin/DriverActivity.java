@@ -167,11 +167,11 @@ public class DriverActivity extends AppCompatActivity {
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
 
-            locationTextView.setText( "위도 : " + latitude+ ", " + "경도 : " + longitude);
+            locationTextView.setText( "위도 : " + latitude+ ", 경도 : " + longitude + ", 거리 : " + busLocator.getDistance(location));
 
         }
         locationListener = gpsLocationListener;
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 1, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 400, 1, locationListener);
 
     }
 
@@ -186,7 +186,7 @@ public class DriverActivity extends AppCompatActivity {
         public void onLocationChanged(@NonNull Location location) {
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
-            locationTextView.setText( "위도 : " + latitude+ ", " + "경도 : " + longitude);
+            locationTextView.setText( "위도 : " + latitude+ ", 경도 : " + longitude + ", 거리 : " + busLocator.getDistance(location));
             setCurrentLocation(location);
         }
     };

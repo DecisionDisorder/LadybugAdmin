@@ -7,7 +7,7 @@ public class BusLocator {
 
     private static StationDataManager stationDataManager = null;
 
-    public static int ERROR_RANGE = 5;
+    public static int ERROR_RANGE = 10;
 
     public BusLocator(StationDataManager pStationDataManager) {
         if(stationDataManager == null)

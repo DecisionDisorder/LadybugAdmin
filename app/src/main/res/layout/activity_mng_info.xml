@@ -87,7 +87,7 @@
                     android:orientation="horizontal">
                     <TextView
                         android:layout_gravity="left|center_vertical"
-                        android:layout_marginLeft="50dp"
+                        android:layout_marginLeft="20dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/admin_abbrev"
@@ -96,9 +96,8 @@
                         android:textSize="16dp"/>
                     <EditText
                         android:id="@+id/adminCodeEditText"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="30dp"
-                        android:layout_width="match_parent"
+                        android:layout_marginLeft="35dp"
+                        android:layout_width="240dp"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
                         android:background="@drawable/white_edge"
@@ -150,6 +149,7 @@
     </ScrollView>
 
     <Button
+        android:id="@+id/saveInfoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"

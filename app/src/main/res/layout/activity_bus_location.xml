@@ -33,6 +33,11 @@
         android:textAlignment="center"
         android:textSize="20dp"
         android:fontFamily="@font/godo_m"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button"
+        android:text="TEST"/>
 
     <FrameLayout
         android:layout_width="match_parent"
