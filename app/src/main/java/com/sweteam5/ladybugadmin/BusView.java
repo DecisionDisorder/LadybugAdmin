@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 
 import androidx.annotation.Nullable;
 
@@ -21,7 +22,7 @@ public class BusView extends View {
     private int locIndex = 0;
     private int size = 0;
 
-    private Context context;
+    private Animation movingEffect = null;
 
     public BusView(Context context, BusLineView busLineView) {
         super(context);
@@ -37,7 +38,6 @@ public class BusView extends View {
 
     public void init(Context context, BusLineView busLineView) {
         this.busLineView = busLineView;
-        this.context = context;
 
         paint = new Paint();
         bus = BitmapFactory.decodeResource(getResources(), R.drawable.ladybug_bus);
@@ -48,6 +48,18 @@ public class BusView extends View {
     public void updateLocation(int locIndex) {
         this.locIndex = locIndex;
         invalidate();
+
+        if(locIndex % 2 == 1) {
+            int height = getSectionHeight(locIndex);
+            movingEffect = new TranslateAnimation(0, 0, height * 0.3f, height * 0.7f);
+            movingEffect.setRepeatCount(Animation.INFINITE);
+            movingEffect.setDuration(3000);
+            startAnimation(movingEffect);
+        }
+        else {
+            if(movingEffect != null)
+                movingEffect.cancel();
+        }
     }
 
     @Override
@@ -61,26 +73,20 @@ public class BusView extends View {
         int middleIndex = busLineView.getMiddleIndex();
         int startY = busLineView.getStartY();
         int len = busLineView.getNames().length;
-        int stationY = busLineView.getY(locIndex / 2, middleIndex, len, height, startY);
+        return busLineView.getY(locIndex / 2, middleIndex, len, height, startY);
+    }
+
+    private int getSectionHeight(int locIndex) {
+        int height = busLineView.getLineHeight();
+        int middleIndex = busLineView.getMiddleIndex();
+        int startY = busLineView.getStartY();
+        int len = busLineView.getNames().length;
 
         if(locIndex < middleIndex * 2) {
-            if(locIndex % 2 == 0) {
-                return stationY;
-            }
-            else {
-                return stationY + height / 2 / middleIndex / 2;
-            }
-        }
-        else if(locIndex > middleIndex * 2) {
-            if(locIndex % 2 == 0) {
-                return stationY;
-            }
-            else {
-                return stationY + height / 2 / (len - middleIndex - 1) / 2;
-            }
+            return height / 2 / middleIndex;
         }
         else {
-            return stationY;
+            return height / 2 / (len - middleIndex - 1);
         }
     }
 }
