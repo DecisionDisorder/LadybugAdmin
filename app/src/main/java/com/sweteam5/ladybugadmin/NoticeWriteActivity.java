@@ -1,18 +1,26 @@
 package com.sweteam5.ladybugadmin;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class NoticeWriteActivity extends AppCompatActivity {
-
+    private static final String TAG = "NoticeWriteActivity";
     private EditText titleEditText;
     private EditText contentEditText;
     private int index = -1;
@@ -21,7 +29,7 @@ public class NoticeWriteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notice_write);
-
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         titleEditText = findViewById(R.id.noticeWriteTitleEditText);
         contentEditText = findViewById(R.id.noticeWriteContentEditText);
 
@@ -30,16 +38,30 @@ public class NoticeWriteActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // TODO: 서버에 수정/작성된 내용 업로드
-                Intent noticeIntent = new Intent();
-                Bundle noticeContentBundle = new Bundle();
-                noticeContentBundle.putString("title", titleEditText.getText().toString());
-                noticeContentBundle.putString("content", contentEditText.getText().toString());
-                noticeContentBundle.putString("dateTime", getDateTime());
-                if(index > 0)
-                    noticeContentBundle.putInt("index", index);
-                noticeIntent.putExtra("noticeContentBundle", noticeContentBundle);
-                setResult(NoticeWriteType.UPLOAD.ordinal(), noticeIntent);
+                String title = titleEditText.getText().toString();
+                long now = System.currentTimeMillis();
+                SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String date = (String)mFormat.format(new Date(now));
+                String content = contentEditText.getText().toString();
+                NoticeInfo noticeInfo = new NoticeInfo(title,date, content);
                 finish();
+                db.collection("notice").add(noticeInfo)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                Log.d(TAG, "DocumentSnapshot written ID"+documentReference.getId());
+                                Toast.makeText(getApplicationContext(), "업로드 성공", Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Error adding document", e);
+                                Toast.makeText(getApplicationContext(), "업로드 실패", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                Intent intent = new Intent(getApplicationContext(), AdminMainActivity.class);
+                startActivity(intent);
             }
         });
 
