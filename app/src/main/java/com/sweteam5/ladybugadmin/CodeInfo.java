@@ -46,13 +46,6 @@ public class CodeInfo extends LinearLayout {
         setTitle(title);
         codeEditText = findViewById(R.id.codeEditText);
 
-        deleteCodeButton = findViewById(R.id.deleteCodeButton);
-        deleteCodeButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mngInfoActivity.deleteCode(codeType, CodeInfo.this);
-            }
-        });
     }
 
     public void setTitle(String title) {
