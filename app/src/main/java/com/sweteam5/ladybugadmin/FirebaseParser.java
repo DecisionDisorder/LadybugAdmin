@@ -55,7 +55,7 @@ public class FirebaseParser<T> {
     //equalkey는 찾을 data의 field값이고 equal은 값 db에서 equal과 같은 값을 가진 dataID를 찾아서 가져온다
     public T getfromFirebase (String collectionPath, String documentID, T content) {
         ResultReturn resultReturn = new ResultReturn();
-        fsdb.collection("notice").document(documentID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        fsdb.collection(collectionPath).document(documentID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot snapshot) {
                 resultReturn.resultObject = (T) snapshot.toObject(content.getClass());
@@ -70,7 +70,7 @@ public class FirebaseParser<T> {
     }
 
     //equalkey는 찾을 data의 field값이고 equal은 값 db에서 equal과 같은 값을 가진 dataID를 찾아서 가져온다
-    public String getidfromFirebase (String collectionPath, String equalfield,String equal, T content) {
+    public String getidfromFirebase (String collectionPath, String equalfield, String equal, T content) {
         ResultReturn resultReturn = new ResultReturn();
         fsdb.collection(collectionPath).whereEqualTo(equalfield, equal).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
