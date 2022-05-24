@@ -69,6 +69,7 @@ public class NoticeMngActivity extends AppCompatActivity implements RecyclerView
         writeBtn.setOnClickListener(new View.OnClickListener() {//click write button
            @Override
             public void onClick(View view) {
+                finish();
                 Intent intent = new Intent(getApplicationContext(), NoticeWriteActivity.class);
                 startActivityForResult(intent, NoticeWriteType.WRITE_NEW.ordinal());
                 noticeAdapter.notifyDataSetChanged();//refresh notice list
