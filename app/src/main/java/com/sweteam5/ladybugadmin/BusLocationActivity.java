@@ -1,27 +1,21 @@
 package com.sweteam5.ladybugadmin;
 
+import android.app.ActivityManager;
+import android.os.Bundle;
+import android.widget.FrameLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.BitmapFactory;
-import android.media.Image;
-import android.os.Bundle;
-import android.text.Layout;
-import android.util.TypedValue;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.List;
 
 public class BusLocationActivity extends AppCompatActivity {
 
     private BusLineView busLineView;
-    private int i = 0; //TEST
+    private int i = 0; //index
+
+    ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+    List proInfos = activityManager.getRunningAppProcesses();
+
 
     private BusView busView;
 
@@ -36,16 +30,19 @@ public class BusLocationActivity extends AppCompatActivity {
 
         busView = drawBus(i);
 
-        Button test = findViewById(R.id.button);
-        test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                i++;
-                if(i >= busLineView.getNames().length * 2 - 1)
-                    i = 0;
-                busView.updateLocation(i);
-            }
-        });
+        Thread busThread = new Thread(new busThread());
+        busThread.start();
+
+//        Button test = findViewById(R.id.button);
+//        test.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                i++;
+//                if(i >= busLineView.getNames().length * 2 - 1)
+//                    i = 0;
+//
+//            }
+//        });
     }
 
     private BusView drawBus(int locIndex)
@@ -58,6 +55,20 @@ public class BusLocationActivity extends AppCompatActivity {
         busView.updateLocation(locIndex);
 
         return busView;
+    }
+
+    class busThread extends Thread{
+        @Override
+        public void run() {
+            //when there is running activity
+            while (proInfos.size() > 0 ) {
+                //get Bus location
+                //convert bus location to i
+                busView.updateLocation(i);
+
+            }
+
+        }
     }
 
 
