@@ -1,21 +1,33 @@
 package com.sweteam5.ladybugadmin;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class NoticeWriteActivity extends AppCompatActivity {
-
+    private DataManage dm;
+    private static final String TAG = "NoticeWriteActivity";
     private EditText titleEditText;
     private EditText contentEditText;
-    private int index = -1;
+    private String DocumentID=null;
+    Context context;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,33 +36,31 @@ public class NoticeWriteActivity extends AppCompatActivity {
 
         titleEditText = findViewById(R.id.noticeWriteTitleEditText);
         contentEditText = findViewById(R.id.noticeWriteContentEditText);
-
         Button uploadBtn = findViewById(R.id.uploadBtn);
+        writeExistingContents();
+        //If click upload button
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: 서버에 수정/작성된 내용 업로드
-                Intent noticeIntent = new Intent();
-                Bundle noticeContentBundle = new Bundle();
-                noticeContentBundle.putString("title", titleEditText.getText().toString());
-                noticeContentBundle.putString("content", contentEditText.getText().toString());
-                noticeContentBundle.putString("dateTime", getDateTime());
-                if(index > 0)
-                    noticeContentBundle.putInt("index", index);
-                noticeIntent.putExtra("noticeContentBundle", noticeContentBundle);
-                setResult(NoticeWriteType.UPLOAD.ordinal(), noticeIntent);
-                finish();
+                String title = titleEditText.getText().toString();
+                long now = System.currentTimeMillis();
+                SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String date = (String)mFormat.format(new Date(now));
+                String content = contentEditText.getText().toString();//get title, contents, date
+                dm = new DataManage();
+                if(DocumentID==null) {
+                    dm.uploadnotice(title, date, content);//push to store
+                    finish();
+                }
+                else{
+                    dm.uploadmodification(context, title, date, content, DocumentID);
+                    //NoticeInfo noticeInfo = new NoticeInfo(title, content, date);
+                    //dm.settoFireBase("notice", modiID, noticeInfo);
+                }
+
             }
         });
 
-        writeExistingContents();
-    }
-
-    private String getDateTime() {
-        long now = System.currentTimeMillis();
-        Date date = new Date(now);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd hh:mm");
-        return format.format(date);
     }
 
     private void writeExistingContents()
@@ -63,7 +73,7 @@ public class NoticeWriteActivity extends AppCompatActivity {
         if (existingBundle != null) {
             String title = existingBundle.getString("title");
             String content = existingBundle.getString("content");
-            index = existingBundle.getInt("index");
+            DocumentID = existingBundle.getString("documentid");
             noticeWriteTitleEditText.setText(title);
             noticeWriteContentEditText.setText(content);
         }

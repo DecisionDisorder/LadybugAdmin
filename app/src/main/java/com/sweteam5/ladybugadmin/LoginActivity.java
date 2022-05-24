@@ -1,5 +1,6 @@
 package com.sweteam5.ladybugadmin;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -11,59 +12,98 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Iterator;
+
 public class LoginActivity extends AppCompatActivity {
 
-    private FirebaseParser<AdminCodeInfo> adminCodeInfoFirebaseParser = new FirebaseParser<>();
-    private FirebaseParser<DriverCodeInfo> driverCodeInfoFirebaseParser = new FirebaseParser<>();
-    private EditText enterCodeEditText;
+    private DatabaseReference databaseReference_admin;
+    private DatabaseReference databaseReference_driver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        databaseReference_admin = FirebaseDatabase.getInstance().getReference("admin");
+        databaseReference_driver = FirebaseDatabase.getInstance().getReference("driver");
+
+        EditText checkId = findViewById(R.id.checkId);
+
         Button loginButton = findViewById(R.id.loginButton);
+        RadioGroup loginType = findViewById(R.id.enterModeType);
         RadioButton radAdminMode = findViewById(R.id.radAdmin);
         RadioButton radDriverMode = findViewById(R.id.radDriver);
-
-        enterCodeEditText = findViewById(R.id.enterCodeEditText);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String code = enterCodeEditText.getText().toString();
 
-                Intent intent = null;
-                if(radAdminMode.isChecked())
-                {
-                    adminLogin(enterCodeEditText.getText().toString());
+                if (radAdminMode.isChecked()) {
+                    databaseReference_admin.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
+                            while (child.hasNext()) {
+                                if (child.next().getKey().equals(checkId.getText().toString())) {
+                                    Toast.makeText(getApplicationContext(), "로그인!", Toast.LENGTH_LONG).show();
+
+                                    Intent intent = null;
+                                    intent = new Intent(getApplicationContext(), AdminMainActivity.class);
+
+                                    if (intent != null)
+                                        startActivity(intent);
+                                    else
+                                        Toast.makeText(getApplicationContext(), "Select a login type", Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+                            }
+                            Toast.makeText(getApplicationContext(), "존재하지 않는 아이디입니다.", Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                 }
-                else if(radDriverMode.isChecked())
-                {
-                    intent = new Intent(getApplicationContext(), DriverActivity.class);
+
+                else if(radDriverMode.isChecked()){
+                    databaseReference_driver.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
+                            while (child.hasNext()) {
+                                if (child.next().getKey().equals(checkId.getText().toString())) {
+                                    Toast.makeText(getApplicationContext(), "로그인!", Toast.LENGTH_LONG).show();
+
+                                    Intent intent = null;
+                                    intent = new Intent(getApplicationContext(), DriverActivity.class);
+
+                                    if (intent != null)
+                                        startActivity(intent);
+                                    else
+                                        Toast.makeText(getApplicationContext(), "Select a login type", Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+                            }
+                            Toast.makeText(getApplicationContext(), "존재하지 않는 아이디입니다.", Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                 }
-
-                /* ToDo: 서버로부터 code 와 radio button 모드가 유효한지 확인 후 결과에 따라 로그인 혹은 토스트메시지 띄우기 */
-
             }
         });
-    }
-
-    private void adminLogin(String code) {
-        AdminCodeInfo adminCodeInfo = new AdminCodeInfo();
-        adminCodeInfo = adminCodeInfoFirebaseParser.getfromFirebase("AdminCode", "admin_code", adminCodeInfo);
-
-        if(adminCodeInfo.getCode().equals(code)) {
-
-            Intent intent = new Intent(getApplicationContext(), AdminMainActivity.class);
-
-            if(intent != null)
-                startActivity(intent);
-            else
-                Toast.makeText(getApplicationContext(), "Select a login type", Toast.LENGTH_SHORT).show();
-        }
-    }
-    private void driverLogin() {
-
     }
 }

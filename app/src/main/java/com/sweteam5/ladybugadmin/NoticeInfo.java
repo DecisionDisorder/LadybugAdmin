@@ -1,31 +1,26 @@
 package com.sweteam5.ladybugadmin;
 
-public class NoticeInfo {
-    private String title;
-    private String date;
-    private String content;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-    public String getTitle() {
-        return title;
-    }
+public class NoticeInfo{
+    String title;
+    String date;
+    String content;
 
-    public void setTitle(String title) {
+    public NoticeInfo(String title,String date, String content) {
         this.title = title;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
         this.date = date;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
         this.content = content;
     }
+    public NoticeInfo() { }
+
+    public String getTitle(){return title;}
+    public void setTitle(String title){this.title = title;}
+    public String getContent(){return this.content;}
+    public void setContent(String content){this.content = content;}
+    public String getDate(){return this.date;}
+    public void setDate(String date){this.date = date;}
+
+
 }
