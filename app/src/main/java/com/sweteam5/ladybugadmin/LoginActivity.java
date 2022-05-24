@@ -13,17 +13,20 @@ import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private FirebaseParser<AdminCodeInfo> adminCodeInfoFirebaseParser = new FirebaseParser<>();
+    private FirebaseParser<DriverCodeInfo> driverCodeInfoFirebaseParser = new FirebaseParser<>();
+    private EditText enterCodeEditText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         Button loginButton = findViewById(R.id.loginButton);
-        RadioGroup loginType = findViewById(R.id.enterModeType);
         RadioButton radAdminMode = findViewById(R.id.radAdmin);
         RadioButton radDriverMode = findViewById(R.id.radDriver);
 
-        EditText enterCodeEditText = findViewById(R.id.enterCodeEditText);
+        enterCodeEditText = findViewById(R.id.enterCodeEditText);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent = null;
                 if(radAdminMode.isChecked())
                 {
-                    intent = new Intent(getApplicationContext(), AdminMainActivity.class);
+                    adminLogin(enterCodeEditText.getText().toString());
                 }
                 else if(radDriverMode.isChecked())
                 {
@@ -42,11 +45,25 @@ public class LoginActivity extends AppCompatActivity {
 
                 /* ToDo: 서버로부터 code 와 radio button 모드가 유효한지 확인 후 결과에 따라 로그인 혹은 토스트메시지 띄우기 */
 
-                if(intent != null)
-                    startActivity(intent);
-                else
-                    Toast.makeText(getApplicationContext(), "Select a login type", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void adminLogin(String code) {
+        AdminCodeInfo adminCodeInfo = new AdminCodeInfo();
+        adminCodeInfo = adminCodeInfoFirebaseParser.getfromFirebase("AdminCode", "admin_code", adminCodeInfo);
+
+        if(adminCodeInfo.getCode().equals(code)) {
+
+            Intent intent = new Intent(getApplicationContext(), AdminMainActivity.class);
+
+            if(intent != null)
+                startActivity(intent);
+            else
+                Toast.makeText(getApplicationContext(), "Select a login type", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void driverLogin() {
+
     }
 }

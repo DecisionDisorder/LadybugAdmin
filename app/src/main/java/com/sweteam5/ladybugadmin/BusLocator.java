@@ -48,7 +48,7 @@ public class BusLocator {
             currentIndex++;
         }
 
-        if(currentIndex >= stationDataManager.stations.length - 1) {
+        if(currentIndex >= (stationDataManager.stations.length - 1) * 2) {
             currentIndex = 0;
         }
     }
