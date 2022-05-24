@@ -151,7 +151,6 @@ public class DriverActivity extends AppCompatActivity {
                 }
             }
             return;
-
         }
     }
 
@@ -197,6 +196,7 @@ public class DriverActivity extends AppCompatActivity {
             if(dist < BusLocator.ERROR_RANGE) {
                 currentLocationTextView.setText(busLocator.getCurrentStationName());
                 isPassedStartingPoint = true;
+                busLocator.setCurrentIndex(currentLocation);
             }
         }
         else {
@@ -208,18 +208,4 @@ public class DriverActivity extends AppCompatActivity {
                 currentLocationTextView.setText(busLocator.getCurrentStationName() + " → " + busLocator.getNextStationName());
         }
     }
-
-    private void test() {
-        //Coordinate pos1 = new Coordinate(37.453530, 127.134233);
-        //Coordinate pos2 = new Coordinate(37.453099, 127.133622);
-        //System.out.println(Coordinate.getDistance(pos1, pos2));
-        Location loc1 = new Location("A");
-        loc1.setLatitude(37.233299);
-        loc1.setLongitude(127.062446);
-        Location loc2 = new Location("B");
-        loc2.setLatitude(37.232849);
-        loc2.setLongitude(127.062335);
-        System.out.println(loc1.distanceTo(loc2));
-    }
-
 }
