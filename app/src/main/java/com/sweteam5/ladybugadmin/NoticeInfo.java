@@ -13,16 +13,7 @@ public class NoticeInfo{
         this.date = date;
         this.content = content;
     }
-    public NoticeInfo() {
-
-    }
-
-    protected NoticeInfo(Parcel in) {
-        title = in.readString();
-        date = in.readString();
-        content = in.readString();
-    }
-
+    public NoticeInfo() { }
 
     public String getTitle(){return title;}
     public void setTitle(String title){this.title = title;}

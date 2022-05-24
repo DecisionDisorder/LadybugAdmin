@@ -2,8 +2,11 @@ package com.sweteam5.ladybugadmin;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,19 +25,23 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MngInfoActivity extends AppCompatActivity {
+public class MngInfoActivity extends AppCompatActivity{
 
-    private ArrayList<CodeInfo> driverInfoList;
-    private ArrayList<CodeInfo> busInfoList;
+    private ArrayList<CodeInfo> codeInfoList;
+    RecyclerView recyclerView;
     private EditText driver_code;
     private EditText admin_code;
     private DatabaseReference db;
-
+    ProgressDialog progressDialog;
+    FirebaseFirestore fsdb;
+    codeAdapter codeAdapter;
+    private DataManage dm;
 
     private String[] codeTypes = {"driver", "bus"};
 
@@ -42,8 +49,6 @@ public class MngInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mng_info);
-        driverInfoList = new ArrayList<CodeInfo>();
-        busInfoList = new ArrayList<CodeInfo>();
         admin_code = findViewById(R.id.adminCodeEditText);
         driver_code = findViewById(R.id.DriverCodeEditText);
         ImageButton del_driver_code = findViewById(R.id.deleteDriverCodeButton);
@@ -86,6 +91,7 @@ public class MngInfoActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
+
         del_driver_code.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,6 +131,7 @@ public class MngInfoActivity extends AppCompatActivity {
 
             }
         });
+
         del_admin_code.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -169,13 +176,21 @@ public class MngInfoActivity extends AppCompatActivity {
                 });
             }
         });
+        /**progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Fetching Data...");
+        progressDialog.show();
+        recyclerView = findViewById(R.id.coderecyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        fsdb = FirebaseFirestore.getInstance();
+        codeInfoList = new ArrayList<CodeInfo>();
+        codeAdapter = new codeAdapter(MngInfoActivity.this, codeInfoList);
+        recyclerView.setAdapter(codeAdapter);
+        dm.showCodeList(progressDialog, codeInfoList, codeAdapter);//get noticeList from server
+        //codeAdapter.notifyDataSetChanged();**/
     }
 
 
 
-    private void updateTitleAll(ArrayList<CodeInfo> list, String title) {
-        for(int i = 0; i < list.size(); i++) {
-            list.get(i).setTitle(title + " " + i);
-        }
-    }
 }

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,8 +26,7 @@ import java.util.ArrayList;
 public class noticeAdapter extends RecyclerView.Adapter<noticeAdapter.noticeViewHolder> {
     Context context;
     ArrayList<NoticeInfo> noticeArrayList;
-    FirebaseFirestore db;
-
+    private DataManage dm;
     public noticeAdapter(Context context, ArrayList<NoticeInfo> noticeArrayList){
         this.context = context;
         this.noticeArrayList = noticeArrayList;
@@ -36,53 +36,43 @@ public class noticeAdapter extends RecyclerView.Adapter<noticeAdapter.noticeView
     @NonNull
     @Override
     public noticeAdapter.noticeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         View v = LayoutInflater.from(context).inflate(R.layout.notice_group_layout, parent, false);
         return new noticeViewHolder(v);
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull noticeAdapter.noticeViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull noticeAdapter.noticeViewHolder holder, int position) {//notice object
         NoticeInfo notice = noticeArrayList.get(position);
-
         holder.title.setText(notice.title);
         holder.date.setText(notice.date);
-        holder.title.setOnClickListener(new View.OnClickListener() {
+        dm = new DataManage();
+
+        holder.title.setOnClickListener(new View.OnClickListener() {//click the title to modify the notice
             @Override
             public void onClick(View view) {
-                //notice를 자세히 보는 창으로 이동
-                Intent intent = new Intent(context, NoticeMngActivity.class);
-                Log.d("noticeAdapter", "err:"+notice.title);
-                intent.putExtra("modify", notice.title);
-                context.startActivity(intent);
+                dm.findmodifyNotice(context, notice.title);
+                /**Intent intent = new Intent(context, NoticeWriteActivity.class);//error
+                intent.putExtra("contentBundle", contentBundle);
+                context.startActivity(intent);**/
             }
         });
 
-
         //delete_button을 누를 시 삭제
         holder.delete_button.setOnClickListener(v->{
-            db = FirebaseFirestore.getInstance();
             AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
             builder.setTitle("Delete notice").setMessage("Will you delete this notice?")
                     .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            // TODO: 게시글 삭제 서버 요청
+                            //String id = dm.getidfromFireBase("notice", "title", notice.title);
 
-                            Intent intent = new Intent(context, NoticeMngActivity.class);
-                            Log.d("noticeAdapter", "err:"+notice.title);
-                            intent.putExtra("delete", notice.title);
-                            context.startActivity(intent);
+                            dm.deleteNotice(context, notice.title);//delete the notice from server
                         }
-
-
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-
-                        }
+                        public void onClick(DialogInterface dialogInterface, int i) { }
                     });
 
             AlertDialog dialog = builder.create();
@@ -90,6 +80,7 @@ public class noticeAdapter extends RecyclerView.Adapter<noticeAdapter.noticeView
 
                 });
         //holder.content.setText(notice.content);
+
     }
 
 
@@ -101,12 +92,12 @@ public class noticeAdapter extends RecyclerView.Adapter<noticeAdapter.noticeView
     public static class noticeViewHolder extends RecyclerView.ViewHolder{
         TextView title, date;
         ImageButton delete_button;
+
         public noticeViewHolder(@NonNull View itemView) {
             super(itemView);
             title =  itemView.findViewById(R.id.noticeTitleTextView);
             date = itemView.findViewById(R.id.noticeDateTimeTextView);
             delete_button = itemView.findViewById(R.id.deleteNoticeButton);
-            //content = itemView.findViewById(R.id.noticeWriteContentEditText);
         }
     }
 }
