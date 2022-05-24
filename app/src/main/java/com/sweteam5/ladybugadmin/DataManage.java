@@ -88,9 +88,6 @@ public class DataManage {
         });
     }
 
-
-
-
     public void uploadmodification(Context context, String title,String date,String content,String DocumentID){
         NoticeInfo noticeInfo = new NoticeInfo(title,date, content);
         fsdb.collection("notice").document(DocumentID).set(noticeInfo).addOnSuccessListener(new OnSuccessListener<Void>() {

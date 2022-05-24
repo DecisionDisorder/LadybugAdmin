@@ -53,8 +53,7 @@ public class NoticeWriteActivity extends AppCompatActivity {
                     finish();
                 }
                 else{
-                    dm.uploadmodification(context, title, date, content, DocumentID);
-                    //NoticeInfo noticeInfo = new NoticeInfo(title, content, date);
+                    dm.uploadmodification(getApplicationContext(), title, date, content, DocumentID);
                     //dm.settoFireBase("notice", modiID, noticeInfo);
                 }
 
