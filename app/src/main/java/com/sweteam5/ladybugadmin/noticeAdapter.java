@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -26,10 +27,12 @@ import java.util.ArrayList;
 public class noticeAdapter extends RecyclerView.Adapter<noticeAdapter.noticeViewHolder> {
     Context context;
     ArrayList<NoticeInfo> noticeArrayList;
-    private DataManage dm;
-    public noticeAdapter(Context context, ArrayList<NoticeInfo> noticeArrayList){
+    private AppCompatActivity activity;
+
+    public noticeAdapter(Context context, ArrayList<NoticeInfo> noticeArrayList, AppCompatActivity activity){
         this.context = context;
         this.noticeArrayList = noticeArrayList;
+        this.activity = activity;
     }
 
 
@@ -46,12 +49,14 @@ public class noticeAdapter extends RecyclerView.Adapter<noticeAdapter.noticeView
         NoticeInfo notice = noticeArrayList.get(position);
         holder.title.setText(notice.title);
         holder.date.setText(notice.date);
-        dm = new DataManage();
+        //dm = new DataManage();
 
         holder.title.setOnClickListener(new View.OnClickListener() {//click the title to modify the notice
             @Override
             public void onClick(View view) {
-                dm.findmodifyNotice(context, notice.title);
+                NoticeMngActivity.dm.findmodifyNotice(activity, context, notice.title);
+                activity.overridePendingTransition(0, 0);
+                activity.finish();
                 /**Intent intent = new Intent(context, NoticeWriteActivity.class);//error
                 intent.putExtra("contentBundle", contentBundle);
                 context.startActivity(intent);**/
@@ -67,7 +72,7 @@ public class noticeAdapter extends RecyclerView.Adapter<noticeAdapter.noticeView
                         public void onClick(DialogInterface dialogInterface, int i) {
                             //String id = dm.getidfromFireBase("notice", "title", notice.title);
 
-                            dm.deleteNotice(context, notice.title);//delete the notice from server
+                            NoticeMngActivity.dm.deleteNotice(activity, notice.title);//delete the notice from server
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

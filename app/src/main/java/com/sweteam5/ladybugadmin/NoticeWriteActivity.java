@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class NoticeWriteActivity extends AppCompatActivity {
-    private DataManage dm;
+    //private DataManage dm;
     private static final String TAG = "NoticeWriteActivity";
     private EditText titleEditText;
     private EditText contentEditText;
@@ -38,6 +38,7 @@ public class NoticeWriteActivity extends AppCompatActivity {
         contentEditText = findViewById(R.id.noticeWriteContentEditText);
         Button uploadBtn = findViewById(R.id.uploadBtn);
         writeExistingContents();
+        AppCompatActivity activity = this;
         //If click upload button
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,15 +48,14 @@ public class NoticeWriteActivity extends AppCompatActivity {
                 SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd");
                 String date = (String)mFormat.format(new Date(now));
                 String content = contentEditText.getText().toString();//get title, contents, date
-                dm = new DataManage();
+                //dm = new DataManage();
                 if(DocumentID==null) {
-                    dm.uploadnotice(title, date, content);//push to store
+                    NoticeMngActivity.dm.uploadnotice(title, date, content);//push to store
                     finish();
                 }
                 else{
-                    dm.uploadmodification(context, title, date, content, DocumentID);
-                    //NoticeInfo noticeInfo = new NoticeInfo(title, content, date);
-                    //dm.settoFireBase("notice", modiID, noticeInfo);
+                    NoticeMngActivity.dm.uploadmodification(activity, title, date, content, DocumentID);
+                    finish();
                 }
 
             }

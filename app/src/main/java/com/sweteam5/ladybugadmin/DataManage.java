@@ -1,5 +1,6 @@
 package com.sweteam5.ladybugadmin;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -26,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.transform.Result;
@@ -35,33 +38,41 @@ public class DataManage {
     private Context context;
     FirebaseFirestore fsdb= FirebaseFirestore.getInstance();
     //FirebaseDatabase db = FirebaseDatabase.getInstance();
-
+    private int noticeAmount;
 
     public void deleteNotice(Context context, String title){
-        fsdb = FirebaseFirestore.getInstance();
-        fsdb.collection("notice").whereEqualTo("title", title).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {//id를 가져옴
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()&&!task.getResult().isEmpty()){
-                    DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-                    String documentID = documentSnapshot.getId();
-                    fsdb.collection("notice").document(documentID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            Intent intent = new Intent(context, NoticeMngActivity.class);
-                            intent.putExtra("refresh", "refresh");
-                            context.startActivity(intent);//refresh the list after delete
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) { }
-                    });
-                }else{}
-            }
-        });
+        if(noticeAmount > 1) {
+            fsdb = FirebaseFirestore.getInstance();
+            fsdb.collection("notice").whereEqualTo("title", title).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {//id를 가져옴
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
+                        String documentID = documentSnapshot.getId();
+                        fsdb.collection("notice").document(documentID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                ((Activity) context).finish();
+                                Intent intent = new Intent(context, NoticeMngActivity.class);
+                                intent.putExtra("refresh", "refresh");
+                                context.startActivity(intent);//refresh the list after delete
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                            }
+                        });
+                    } else {
+                    }
+                }
+            });
+        }
+        else {
+            Toast.makeText(context, "The last remaining announcement can't be deleted.", Toast.LENGTH_LONG);
+        }
     }
 
-    public void findmodifyNotice(Context context, String title){//find existing notice for modifying
+    public void findmodifyNotice(AppCompatActivity activity, Context context, String title){//find existing notice for modifying
         this.context = context;//NoticeMng
         fsdb = FirebaseFirestore.getInstance();
         Bundle contentBundle = new Bundle();
@@ -77,13 +88,10 @@ public class DataManage {
                             contentBundle.putString("documentid", (String)documentID);
                             Intent intent = new Intent(context, NoticeWriteActivity.class);//error
                             intent.putExtra("contentBundle", contentBundle);
-                            context.startActivity(intent);
+                            activity.startActivityForResult(intent, 1001);
                             //return contentBundle;
                             //startActivityForResult(intent, NoticeWriteType.MODIFICATION.ordinal());
                 }
-
-
-
             }
         });
     }
@@ -91,15 +99,16 @@ public class DataManage {
 
 
 
-    public void uploadmodification(Context context, String title,String date,String content,String DocumentID){
+    public void uploadmodification(AppCompatActivity activity, String title,String date,String content,String DocumentID){
         NoticeInfo noticeInfo = new NoticeInfo(title,date, content);
         fsdb.collection("notice").document(DocumentID).set(noticeInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                Intent intent = new Intent(context, NoticeMngActivity.class);
+                Intent intent = new Intent(activity, NoticeMngActivity.class);
                 intent.putExtra("refresh", "refresh");
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);//refresh the list after delete
+                activity.overridePendingTransition(0, 0);//인텐트 효과 없애기
+                activity.startActivity(intent);//refresh the list after delete
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -123,10 +132,13 @@ public class DataManage {
                     if(dc.getType() == DocumentChange.Type.ADDED){
                         noticeArrayList.add(dc.getDocument().toObject(NoticeInfo.class));
                     }
+                    Collections.reverse(noticeArrayList);
                     noticeAdapter.notifyDataSetChanged();
                     if(progressDialog.isShowing())
                         progressDialog.dismiss();
                 }
+                noticeAmount = noticeArrayList.size();
+                System.out.println(noticeAmount);
             }
         });
     }
