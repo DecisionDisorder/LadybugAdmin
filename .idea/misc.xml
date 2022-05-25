@@ -12,6 +12,7 @@
         <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/drawable/underbar_button.xml" value="0.328" />
         <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/drawable/white_edge.xml" value="0.3465" />
         <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/font/font.xml" value="0.3963541666666667" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/activity_add_code.xml" value="0.23233695652173914" />
         <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/activity_admin_main.xml" value="0.36614583333333334" />
         <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/activity_bus_location.xml" value="0.25" />
         <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/activity_driver.xml" value="0.33" />
@@ -22,6 +23,8 @@
         <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/activity_notice_mng.xml" value="0.33" />
         <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/activity_notice_write.xml" value="0.36614583333333334" />
         <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/activity_notice_writting.xml" value="0.36614583333333334" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/add_code_dialog.xml" value="0.23233695652173914" />
+        <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/code_group_layout.xml" value="0.36614583333333334" />
         <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/driver_code_layout.xml" value="0.36614583333333334" />
         <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/fragment_notice_list.xml" value="0.36614583333333334" />
         <entry key="..\:/OneDrive - gc.gachon.ac.kr/Android App Project/LadybugAdmin/app/src/main/res/layout/info_code_layout.xml" value="0.3770833333333333" />

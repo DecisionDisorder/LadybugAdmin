@@ -31,12 +31,13 @@
     <string name="contents_hint">Contents...</string>
     <string name="upload">Upload</string>
 
-    <string name="code_management">Code Management</string>
+    <string name="driver_code_management">Driver Code Management</string>
     <string name="add_driver">Add Driver</string>
     <string name="admin_abbrev">Admin</string>
     <string name="code">Code</string>
-    <string name="bus_info_management">Bus Info Management</string>
-    <string name="add_bus">Add Bus</string>
-    <string name="bus">Bus</string>
+    <string name="admin_info_management">Admin Info Management</string>
+    <string name="add_admin">Add Admin</string>
     <string name="save">Save</string>
+
+    <string name="add_code_title">Add Code</string>
 </resources>

@@ -44,12 +44,10 @@
                 android:fontFamily="@font/godo_m"/>
 
             <LinearLayout
-                android:id="@+id/driverCodeContainer"
+                android:id="@+id/adminCodeContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -59,7 +57,7 @@
                         android:layout_marginLeft="30dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/code_management"
+                        android:text="@string/admin_info_management"
                         android:fontFamily="@font/godo_m"
                         android:textColor="@color/black"
                         android:textSize="16dp"/>
@@ -67,10 +65,24 @@
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:layout_weight="1"/>
+                    <Button
+                        android:id="@+id/addAdminButton"
+                        android:layout_width="140dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="30dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:layout_gravity="right"
+                        android:background="@drawable/round_outline_button"
+                        android:text="@string/add_admin"
+                        android:textAllCaps="false"
+                        android:fontFamily="@font/godo_m"
+                        android:textSize="17dp"/>
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_marginTop="10dp"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -93,98 +105,47 @@
                         android:hint="@string/code"
                         android:textSize="16dp"
                         android:fontFamily="@font/godo_m"/>
-                    <ImageButton
-                        android:id="@+id/deleteAdminCodeButton"
-                        android:layout_marginLeft="10px"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center_vertical|right"
-                        android:layout_marginRight="20dp"
-                        android:background="#00000000"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/delete"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left|center_vertical"
-                        android:layout_marginLeft="20dp"
-                        android:fontFamily="@font/godo_m"
-                        android:text="@string/driver"
-                        android:textColor="@color/black"
-                        android:textSize="16dp" />
-
-                    <EditText
-                        android:id="@+id/DriverCodeEditText"
-                        android:layout_width="240dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="35dp"
-                        android:background="@drawable/white_edge"
-                        android:fontFamily="@font/godo_m"
-                        android:hint="@string/code"
-                        android:padding="10dp"
-                        android:textSize="16dp" />
-                    <ImageButton
-                        android:id="@+id/deleteDriverCodeButton"
-                        android:layout_marginLeft="10px"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center_vertical|right"
-                        android:layout_marginRight="20dp"
-                        android:background="#00000000"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/delete"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id = "@+id/coderecyclerView">
-
-                    </androidx.recyclerview.widget.RecyclerView>
-
                 </LinearLayout>
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/driverCodeContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_gravity="left|center_vertical"
+                        android:layout_marginLeft="30dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/driver_code_management"
+                        android:fontFamily="@font/godo_m"
+                        android:textColor="@color/black"
+                        android:textSize="16dp"/>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"/>
+                    <Button
+                        android:id="@+id/addDriverButton"
+                        android:layout_width="140dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="30dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:layout_gravity="right"
+                        android:background="@drawable/round_outline_button"
+                        android:text="@string/add_driver"
+                        android:textAllCaps="false"
+                        android:fontFamily="@font/godo_m"
+                        android:textSize="18dp"/>
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
-    <Button
-        android:id="@+id/testButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/round_button"
-        android:fontFamily="@font/godo_m"
-        android:text="TEST"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="18dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-    <Button
-        android:id="@+id/saveInfoButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/round_button"
-        android:fontFamily="@font/godo_m"
-        android:text="@string/save"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="18dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 </LinearLayout>

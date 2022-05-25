@@ -1,4 +1,4 @@
-package com.sweteam5.ladybugadmin;
+/*package com.sweteam5.ladybugadmin;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -54,4 +54,4 @@ public class codeAdapter extends RecyclerView.Adapter<codeAdapter.codeViewHolder
             code = itemView.findViewById(R.id.codeTextView);
         }
     }
-}
+}*/

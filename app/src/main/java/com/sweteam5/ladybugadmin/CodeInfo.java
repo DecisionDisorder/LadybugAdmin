@@ -1,6 +1,7 @@
 package com.sweteam5.ladybugadmin;
 
 import android.content.Context;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,21 +11,61 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class CodeInfo {
+public class CodeInfo extends LinearLayout {
 
     private MngInfoActivity mngInfoActivity;
-
-    String codeType;
-    String code;
+    private MngInfoActivity.CodeType codeType;
     public EditText codeEditText;
+    public ImageButton deleteCodeButton;
     private TextView codeTextView;
 
-    public CodeInfo(String codeType, String code) {
+    public CodeInfo(Context context, AttributeSet attrs, String title,
+                    MngInfoActivity.CodeType codeType, MngInfoActivity mngInfoActivity) {
+        super(context, attrs);
+
         this.codeType = codeType;
         this.mngInfoActivity = mngInfoActivity;
+
+        init(context, title);
     }
-    public String getCodeType(){return codeType;}
-    public void setCodeType(String codeType){this.codeType = codeType;}
-    public String getcode(){return this.code;}
-    public void setcode(String code){this.code = code;}
+
+    public CodeInfo(Context context, String title,
+                    MngInfoActivity.CodeType codeType, MngInfoActivity mngInfoActivity) {
+        super(context);
+
+        this.codeType = codeType;
+        this.mngInfoActivity = mngInfoActivity;
+
+        init(context, title);
+    }
+
+    private void init(Context context, String title){
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(R.layout.info_code_layout, this, true);
+
+        codeTextView = findViewById(R.id.codeTextView);
+        setTitle(title);
+        codeEditText = findViewById(R.id.codeEditText);
+
+        deleteCodeButton = findViewById(R.id.deleteCodeButton);
+        deleteCodeButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mngInfoActivity.deleteCode(codeType, CodeInfo.this);
+            }
+        });
+    }
+
+    public void setTitle(String title) {
+        codeTextView.setText(title);
+    }
+
+    public String getCodeOnEditText() {
+        return codeEditText.getText().toString();
+    }
+
+    public void initCode(String code) {
+        codeEditText.setText(code);
+        codeEditText.setInputType(InputType.TYPE_NULL);
+    }
 }
