@@ -44,6 +44,8 @@ public class MngInfoActivity extends AppCompatActivity{
     private DataManage dm;
 
     private String[] codeTypes = {"driver", "bus"};
+    private String[] adminCodes;
+    private String[] driverCodes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,6 +178,9 @@ public class MngInfoActivity extends AppCompatActivity{
                 });
             }
         });
+
+        adminCodes = getCodeFromServer("admin");
+        driverCodes = getCodeFromServer("driver");
         /**progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Fetching Data...");
@@ -191,6 +196,30 @@ public class MngInfoActivity extends AppCompatActivity{
         //codeAdapter.notifyDataSetChanged();**/
     }
 
+    private String[] getCodeFromServer(String path) {
+        ResultLoad resultLoad = new ResultLoad();
+        FirebaseDatabase.getInstance().getReference("admin").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()) {
+                    resultLoad.stringArray = getCodeList(task.getResult().getValue().toString());
+                }
+            }
+        });
 
+        return resultLoad.stringArray;
+    }
+
+    private String[] getCodeList(String codeInDictionary) {
+        String[] list = codeInDictionary.split(",");
+        for(int i = 0; i < list.length; i++) {
+            list[i] = list[i].replaceAll("[^0-9]", "");
+        }
+        return list;
+    }
+
+    class ResultLoad {
+        String[] stringArray;
+    }
 
 }
