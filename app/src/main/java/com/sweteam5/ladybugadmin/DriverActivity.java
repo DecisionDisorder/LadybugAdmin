@@ -21,8 +21,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 public class DriverActivity extends AppCompatActivity {
     private TextView locationTextView;
@@ -52,6 +55,8 @@ public class DriverActivity extends AppCompatActivity {
     private BusLocator busLocator;
     private StationDataManager stationDataManager;
 
+    private boolean[] busOperationCheckList;
+
     private final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 1001;
 
     @Override
@@ -70,7 +75,6 @@ public class DriverActivity extends AppCompatActivity {
         currentLocationContainer = findViewById(R.id.currentLocationContainer);
         startStationSpinner = findViewById(R.id.startStationSpinner);
 
-        setOperation(false);
 
         changeStatusButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,6 +89,63 @@ public class DriverActivity extends AppCompatActivity {
 
         busLocator = new BusLocator(stationDataManager);
         initStartStationSpinner();
+
+        setOperation(false);
+
+        setOperationBus();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        setOperation(false);
+    }
+
+    private void setOperationBus() {
+        FirebaseDatabase.getInstance().getReference("Operation").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()) {
+                    System.out.println(task.getResult().getValue().toString());
+                    busOperationCheckList = getAvailableBusList(task.getResult().getValue().toString());
+
+                    getAvailableBus();
+                }
+            }
+        });
+    }
+
+    private boolean[] getAvailableBusList(String codeInDictionary) {
+        String subStr = codeInDictionary.substring(codeInDictionary.indexOf(',') + 2);
+        subStr = subStr.replaceAll("]", "");
+        subStr = subStr.replaceAll(" ", "");
+        String[] res = subStr.split(",");
+        boolean[] result = new boolean[res.length];
+        for (int i = 0; i < result.length; i++)
+            result[i] = Boolean.parseBoolean(res[i]);
+
+        return result;
+    }
+
+    private void getAvailableBus() {
+        ArrayList<Integer> operationableBus = new ArrayList<>();
+        for(int i = 0; i < busOperationCheckList.length; i++) {
+            if(!busOperationCheckList[i])
+                operationableBus.add(i + 1);
+        }
+
+        int[] busNumberArr = new int[operationableBus.size()];
+        for(int i = 0; i < operationableBus.size(); i++)
+            busNumberArr[i] = operationableBus.get(i);
+
+        Integer[] busNumbers = new Integer[busNumberArr.length];
+        for (int i = 0; i < busNumberArr.length; i++)
+            busNumbers[i] = Integer.valueOf(busNumberArr[i]);
+
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, busNumbers);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        busNumberSpinner.setAdapter(adapter);
     }
 
     private void initStartStationSpinner() {
@@ -97,6 +158,7 @@ public class DriverActivity extends AppCompatActivity {
 
     private void setOperation(boolean active) {
         isInOperation = active;
+        setBusOperationToServer(active);
         if (isInOperation) {
             /* Swap StartStation and CurrentLocation */
             startStationContainer.setVisibility(View.GONE);
@@ -105,7 +167,7 @@ public class DriverActivity extends AppCompatActivity {
             /* Initialize with starting station information */
             String stationName = startStationSpinner.getSelectedItem().toString();
             currentLocationTextView.setText("Going to " + stationName);
-            busLocator.initStartIndex(busLocator.getIndexByName(stationName));
+            busLocator.initStartIndex(busLocator.getIndexByName(stationName), getCurrentBusNum());
             isPassedStartingPoint = false;
 
             /* Change design of current state and change status button */
@@ -129,8 +191,24 @@ public class DriverActivity extends AppCompatActivity {
             changeStatusButton.setText(getResources().getString(R.string.start_driving));
             changeStatusButton.setTextColor(Color.BLACK);
             stopGetLocation();
+            busLocator.initStartIndex(-1, getCurrentBusNum());
         }
         busNumberSpinner.setEnabled(!active);
+    }
+
+    public String getCurrentBusNum() {
+        return busNumberSpinner.getSelectedItem().toString();
+    }
+
+    private void setBusOperationToServer(boolean active) {
+        String busNum = getCurrentBusNum();
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference("Operation");
+        db.child(busNum).setValue(active).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+
+            }
+        });
     }
 
     private void permissionCheckGps() {
@@ -206,11 +284,11 @@ public class DriverActivity extends AppCompatActivity {
             if(dist < BusLocator.ERROR_RANGE) {
                 currentLocationTextView.setText(busLocator.getCurrentStationName());
                 isPassedStartingPoint = true;
-                busLocator.setCurrentIndex(currentLocation);
+                busLocator.setCurrentIndex(currentLocation, getCurrentBusNum());
             }
         }
         else {
-            busLocator.setCurrentIndex(currentLocation);
+            busLocator.setCurrentIndex(currentLocation, getCurrentBusNum());
             int currentIndex = busLocator.getCurrentIndex();
             if(currentIndex % 2 == 0)
                 currentLocationTextView.setText(busLocator.getCurrentStationName());

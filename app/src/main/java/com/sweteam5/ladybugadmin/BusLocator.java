@@ -26,9 +26,9 @@ public class BusLocator {
             stationDataManager = pStationDataManager;
     }
 
-    public void initStartIndex(int startIndex) {
+    public void initStartIndex(int startIndex, String busNum) {
         currentIndex = startIndex;
-        updateIndex(currentIndex);
+        updateIndex(currentIndex, busNum);
     }
 
     public double getDistance (Location currentLocation) {
@@ -51,21 +51,21 @@ public class BusLocator {
         }
     }
 
-    public void setCurrentIndex(Location currentLocation) {
+    public void setCurrentIndex(Location currentLocation, String busNum) {
         boolean isNear = isNearStation(currentLocation);
         // current Index 가 홀수이면 정류장 사이에 있다는 뜻
         if(isNear && currentIndex % 2 == 1) {
             currentIndex++;
-            updateIndex(currentIndex);
+            updateIndex(currentIndex, busNum);
         }
         else if(!isNear && currentIndex % 2 == 0){
             currentIndex++;
-            updateIndex(currentIndex);
+            updateIndex(currentIndex, busNum);
         }
 
         if(currentIndex >= (stationDataManager.stations.length - 1) * 2) {
             currentIndex = 0;
-            updateIndex(currentIndex);
+            updateIndex(currentIndex, busNum);
         }
     }
 
@@ -89,8 +89,8 @@ public class BusLocator {
         return stationDataManager.stations[(currentIndex + 1) / 2].getName();
     }
 
-    public void updateIndex(int currentIndex){
-        locationRef.child("LocationIndex").setValue(currentIndex).addOnSuccessListener(new OnSuccessListener<Void>() {
+    public void updateIndex(int currentIndex, String busNum){
+        locationRef.child("LocationIndex_" + busNum).setValue(currentIndex).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
             }
