@@ -45,7 +45,7 @@ public class NoticeWriteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String title = titleEditText.getText().toString();
                 long now = System.currentTimeMillis();
-                SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                 String date = (String)mFormat.format(new Date(now));
                 String content = contentEditText.getText().toString();//get title, contents, date
                 //dm = new DataManage();

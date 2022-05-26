@@ -48,7 +48,10 @@ public class noticeAdapter extends RecyclerView.Adapter<noticeAdapter.noticeView
     public void onBindViewHolder(@NonNull noticeAdapter.noticeViewHolder holder, int position) {//notice object
         NoticeInfo notice = noticeArrayList.get(position);
         holder.title.setText(notice.title);
-        holder.date.setText(notice.date);
+        if(notice.date.length() > 14)
+            holder.date.setText(notice.date.substring(0, notice.date.length() - 3));
+        else
+            holder.date.setText(notice.date);
         //dm = new DataManage();
 
         holder.title.setOnClickListener(new View.OnClickListener() {//click the title to modify the notice

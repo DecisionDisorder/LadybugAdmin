@@ -25,6 +25,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -105,10 +106,10 @@ public class DataManage {
         fsdb.collection("notice").document(DocumentID).set(noticeInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                Intent intent = new Intent(activity, NoticeMngActivity.class);
+                /*Intent intent = new Intent(activity, NoticeMngActivity.class);
                 intent.putExtra("refresh", "refresh");
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                //activity.startActivity(intent);//refresh the list after delete
+                //activity.startActivity(intent);//refresh the list after delete*/
                 activity.finish();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -120,7 +121,7 @@ public class DataManage {
     }
 
     public void showNoticeList(ProgressDialog progressDialog, ArrayList<NoticeInfo> noticeArrayList, noticeAdapter noticeAdapter){
-        fsdb.collection("notice").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        fsdb.collection("notice").orderBy("date", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if(error != null){
@@ -131,13 +132,14 @@ public class DataManage {
                 }
                 for(DocumentChange dc  :value.getDocumentChanges()){
                     if(dc.getType() == DocumentChange.Type.ADDED){
-                        noticeArrayList.add(dc.getDocument().toObject(NoticeInfo.class));
+                        NoticeInfo notice = dc.getDocument().toObject(NoticeInfo.class);
+                        noticeArrayList.add(notice);
                     }
-                    Collections.reverse(noticeArrayList);
                     noticeAdapter.notifyDataSetChanged();
                     if(progressDialog.isShowing())
                         progressDialog.dismiss();
                 }
+                //Collections.reverse(noticeArrayList);
                 noticeAmount = noticeArrayList.size();
             }
         });
@@ -149,9 +151,7 @@ public class DataManage {
         fsdb.collection("notice").add(noticeInfo)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Toast.makeText(context, "Notice Uploaded", Toast.LENGTH_SHORT).show();
-                    }
+                    public void onSuccess(DocumentReference documentReference) { }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
