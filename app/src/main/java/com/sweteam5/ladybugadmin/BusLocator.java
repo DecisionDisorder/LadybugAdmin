@@ -1,6 +1,14 @@
 package com.sweteam5.ladybugadmin;
 
 import android.location.Location;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class BusLocator {
     private int currentIndex = 0;
@@ -9,6 +17,10 @@ public class BusLocator {
 
     public static int ERROR_RANGE = 10;
 
+    FirebaseDatabase indexDatabase = FirebaseDatabase.getInstance();
+    DatabaseReference locationRef = indexDatabase.getReference("Location");
+
+
     public BusLocator(StationDataManager pStationDataManager) {
         if(stationDataManager == null)
             stationDataManager = pStationDataManager;
@@ -16,6 +28,7 @@ public class BusLocator {
 
     public void initStartIndex(int startIndex) {
         currentIndex = startIndex;
+        updateIndex(currentIndex);
     }
 
     public double getDistance (Location currentLocation) {
@@ -43,13 +56,16 @@ public class BusLocator {
         // current Index 가 홀수이면 정류장 사이에 있다는 뜻
         if(isNear && currentIndex % 2 == 1) {
             currentIndex++;
+            updateIndex(currentIndex);
         }
         else if(!isNear && currentIndex % 2 == 0){
             currentIndex++;
+            updateIndex(currentIndex);
         }
 
         if(currentIndex >= (stationDataManager.stations.length - 1) * 2) {
             currentIndex = 0;
+            updateIndex(currentIndex);
         }
     }
 
@@ -71,5 +87,18 @@ public class BusLocator {
 
     public String getNextStationName() {
         return stationDataManager.stations[(currentIndex + 1) / 2].getName();
+    }
+
+    public void updateIndex(int currentIndex){
+        locationRef.child("LocationIndex").setValue(currentIndex).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
     }
 }
