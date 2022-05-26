@@ -55,8 +55,7 @@ public class noticeAdapter extends RecyclerView.Adapter<noticeAdapter.noticeView
             @Override
             public void onClick(View view) {
                 NoticeMngActivity.dm.findmodifyNotice(activity, context, notice.title);
-                activity.overridePendingTransition(0, 0);
-                activity.finish();
+                //activity.finish();
                 /**Intent intent = new Intent(context, NoticeWriteActivity.class);//error
                 intent.putExtra("contentBundle", contentBundle);
                 context.startActivity(intent);**/

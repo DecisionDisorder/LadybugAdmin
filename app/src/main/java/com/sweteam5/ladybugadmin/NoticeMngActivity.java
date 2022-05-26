@@ -43,18 +43,25 @@ public class NoticeMngActivity extends AppCompatActivity implements RecyclerView
     ProgressDialog progressDialog;
     static DataManage dm;
 
-    public void onResume() {
+    /*public void onResume() {
         super.onResume();
 
         noticeAdapter.notifyItemChanged(0);
-    }
+    }*/
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        onResume();
+        updateNoticeList();
+    }
+
+    public void updateNoticeList() {
+        noticeArrayList = new ArrayList<NoticeInfo>();
+        noticeAdapter = new noticeAdapter(NoticeMngActivity.this, noticeArrayList, this);
+        recyclerView.setAdapter(noticeAdapter);
+        dm.showNoticeList(progressDialog, noticeArrayList, noticeAdapter);//get noticeList from server
     }
 
     @Override
@@ -83,7 +90,7 @@ public class NoticeMngActivity extends AppCompatActivity implements RecyclerView
         writeBtn.setOnClickListener(new View.OnClickListener() {//click write button
            @Override
             public void onClick(View view) {
-                finish();
+                //finish();
                 Intent intent = new Intent(getApplicationContext(), NoticeWriteActivity.class);
                 startActivityForResult(intent, NoticeWriteType.WRITE_NEW.ordinal());
                 noticeAdapter.notifyDataSetChanged();//refresh notice list

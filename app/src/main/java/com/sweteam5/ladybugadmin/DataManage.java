@@ -52,10 +52,11 @@ public class DataManage {
                         fsdb.collection("notice").document(documentID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                ((Activity) context).finish();
+                                /*((Activity) context).finish();
                                 Intent intent = new Intent(context, NoticeMngActivity.class);
                                 intent.putExtra("refresh", "refresh");
-                                context.startActivity(intent);//refresh the list after delete
+                                context.startActivity(intent);//refresh the list after delete*/
+                                ((NoticeMngActivity)context).updateNoticeList();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -107,8 +108,8 @@ public class DataManage {
                 Intent intent = new Intent(activity, NoticeMngActivity.class);
                 intent.putExtra("refresh", "refresh");
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                activity.overridePendingTransition(0, 0);//인텐트 효과 없애기
-                activity.startActivity(intent);//refresh the list after delete
+                //activity.startActivity(intent);//refresh the list after delete
+                activity.finish();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -138,18 +139,19 @@ public class DataManage {
                         progressDialog.dismiss();
                 }
                 noticeAmount = noticeArrayList.size();
-                System.out.println(noticeAmount);
             }
         });
     }
 
     public void uploadnotice(String title, String date, String content){
         NoticeInfo noticeInfo = new NoticeInfo(title,date, content);
-        Log.d("DataManage", title+date+content);
+        //Log.d("DataManage", title+date+content);
         fsdb.collection("notice").add(noticeInfo)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) { }
+                    public void onSuccess(DocumentReference documentReference) {
+                        Toast.makeText(context, "Notice Uploaded", Toast.LENGTH_SHORT).show();
+                    }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
