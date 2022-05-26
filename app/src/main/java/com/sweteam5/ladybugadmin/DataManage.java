@@ -25,6 +25,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -52,10 +53,11 @@ public class DataManage {
                         fsdb.collection("notice").document(documentID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                ((Activity) context).finish();
+                                /*((Activity) context).finish();
                                 Intent intent = new Intent(context, NoticeMngActivity.class);
                                 intent.putExtra("refresh", "refresh");
-                                context.startActivity(intent);//refresh the list after delete
+                                context.startActivity(intent);//refresh the list after delete*/
+                                ((NoticeMngActivity)context).updateNoticeList();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -104,11 +106,11 @@ public class DataManage {
         fsdb.collection("notice").document(DocumentID).set(noticeInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                Intent intent = new Intent(activity, NoticeMngActivity.class);
+                /*Intent intent = new Intent(activity, NoticeMngActivity.class);
                 intent.putExtra("refresh", "refresh");
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                activity.overridePendingTransition(0, 0);//인텐트 효과 없애기
-                activity.startActivity(intent);//refresh the list after delete
+                //activity.startActivity(intent);//refresh the list after delete*/
+                activity.finish();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -119,7 +121,7 @@ public class DataManage {
     }
 
     public void showNoticeList(ProgressDialog progressDialog, ArrayList<NoticeInfo> noticeArrayList, noticeAdapter noticeAdapter){
-        fsdb.collection("notice").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        fsdb.collection("notice").orderBy("date", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if(error != null){
@@ -130,22 +132,22 @@ public class DataManage {
                 }
                 for(DocumentChange dc  :value.getDocumentChanges()){
                     if(dc.getType() == DocumentChange.Type.ADDED){
-                        noticeArrayList.add(dc.getDocument().toObject(NoticeInfo.class));
+                        NoticeInfo notice = dc.getDocument().toObject(NoticeInfo.class);
+                        noticeArrayList.add(notice);
                     }
-                    Collections.reverse(noticeArrayList);
                     noticeAdapter.notifyDataSetChanged();
                     if(progressDialog.isShowing())
                         progressDialog.dismiss();
                 }
+                //Collections.reverse(noticeArrayList);
                 noticeAmount = noticeArrayList.size();
-                System.out.println(noticeAmount);
             }
         });
     }
 
     public void uploadnotice(String title, String date, String content){
         NoticeInfo noticeInfo = new NoticeInfo(title,date, content);
-        Log.d("DataManage", title+date+content);
+        //Log.d("DataManage", title+date+content);
         fsdb.collection("notice").add(noticeInfo)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
