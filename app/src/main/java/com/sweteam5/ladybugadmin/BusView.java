@@ -57,9 +57,13 @@ public class BusView extends View {
             startAnimation(movingEffect);
         }
         else {
-            if(movingEffect != null)
-                movingEffect.cancel();
+            stopAnimation();
         }
+    }
+
+    public void stopAnimation() {
+        if(movingEffect != null)
+            movingEffect.cancel();
     }
 
     @Override
