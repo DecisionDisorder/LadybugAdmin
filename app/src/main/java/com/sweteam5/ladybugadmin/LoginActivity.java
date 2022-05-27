@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
                                     if (intent != null)
                                         startActivity(intent);
                                     else
-                                        Toast.makeText(getApplicationContext(), "Select a login type", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), "로그인 종류를 정해주세요.", Toast.LENGTH_LONG).show();
                                     return;
                                 }
                             }
@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                                     if (intent != null)
                                         startActivity(intent);
                                     else
-                                        Toast.makeText(getApplicationContext(), "Select a login type", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), "로그인 정류를 정해주세요.", Toast.LENGTH_LONG).show();
                                     return;
                                 }
                             }

@@ -166,7 +166,7 @@ public class DriverActivity extends AppCompatActivity {
 
             /* Initialize with starting station information */
             String stationName = startStationSpinner.getSelectedItem().toString();
-            currentLocationTextView.setText("Going to " + stationName);
+            currentLocationTextView.setText(stationName + "(으)로 향하는 중");
             busLocator.initStartIndex(busLocator.getIndexByName(stationName), getCurrentBusNum());
             isPassedStartingPoint = false;
 
@@ -214,13 +214,13 @@ public class DriverActivity extends AppCompatActivity {
     private void permissionCheckGps() {
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "Location permission is needed.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show();
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                Toast.makeText(this, "Location information is required to share the location of the bus.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "버스의 위치를 공유하기 위해 위치 정보가 필요합니다.", Toast.LENGTH_LONG).show();
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_FINE_LOCATION);
-                Toast.makeText(this, "Location information is required to share the location of the bus.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "버스의 위치를 공유하기 위해 위치 정보가 필요합니다.", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -231,9 +231,9 @@ public class DriverActivity extends AppCompatActivity {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_FINE_LOCATION: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    Toast.makeText(this, "Permission is granted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "권한이 승인되었습니다.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(this, "It hasn't been approved yet.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "아직 권한이 승인되지 않았습니다.", Toast.LENGTH_SHORT).show();
                 }
             }
             return;

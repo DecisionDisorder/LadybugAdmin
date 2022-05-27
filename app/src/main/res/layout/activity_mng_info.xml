@@ -37,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="@string/bus_location"
+                android:text="@string/manage_info"
                 android:textColor="#ce3a4c"
                 android:textAlignment="center"
                 android:textSize="20dp"

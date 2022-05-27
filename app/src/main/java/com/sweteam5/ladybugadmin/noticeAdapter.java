@@ -68,8 +68,8 @@ public class noticeAdapter extends RecyclerView.Adapter<noticeAdapter.noticeView
         //delete_button을 누를 시 삭제
         holder.delete_button.setOnClickListener(v->{
             AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
-            builder.setTitle("Delete notice").setMessage("Will you delete this notice?")
-                    .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            builder.setTitle("공지 삭제").setMessage("이 공지를 삭제하겠습니까?")
+                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             //String id = dm.getidfromFireBase("notice", "title", notice.title);
@@ -77,7 +77,7 @@ public class noticeAdapter extends RecyclerView.Adapter<noticeAdapter.noticeView
                             NoticeMngActivity.dm.deleteNotice(activity, notice.title);//delete the notice from server
                         }
                     })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    .setNegativeButton("취소", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) { }
                     });

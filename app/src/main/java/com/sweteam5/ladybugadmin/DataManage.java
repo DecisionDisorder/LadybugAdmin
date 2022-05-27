@@ -70,7 +70,7 @@ public class DataManage {
             });
         }
         else {
-            Toast.makeText(context, "The last remaining announcement can't be deleted.", Toast.LENGTH_LONG);
+            Toast.makeText(context, "마지막 공지는 삭제할 수 없어요.", Toast.LENGTH_LONG);
         }
     }
 

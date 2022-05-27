@@ -9,6 +9,7 @@
     android:orientation="vertical">
     <!-- For debugging -->
     <TextView
+        android:visibility="gone"
         android:id="@+id/locationTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

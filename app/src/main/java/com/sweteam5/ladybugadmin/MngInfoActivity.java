@@ -192,13 +192,13 @@ public class MngInfoActivity extends AppCompatActivity{
 
     public void deleteCode(MngInfoActivity.CodeType type, CodeInfo codeInfo) {
         if(type == CodeType.ADMIN && adminCodes.size() <= 1) {
-            Toast.makeText(this, "There must be at least one admin code.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "마지막 관리자 코드는 지울 수 없습니다.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Delete Code").setMessage("Will you delete the code?")
-                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+        builder.setTitle("코드 삭제").setMessage("로그인 코드를 삭제하시겠습니까?")
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if(type == CodeType.DRIVER) {
@@ -207,7 +207,7 @@ public class MngInfoActivity extends AppCompatActivity{
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
-                                        Toast.makeText(MngInfoActivity.this, "Successfully deleted", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MngInfoActivity.this, "성공적으로 삭제했습니다.", Toast.LENGTH_SHORT).show();
 
                                         driverCodeContainer.removeView(codeInfo);
                                         driverInfoList.remove(codeInfo);
@@ -215,7 +215,7 @@ public class MngInfoActivity extends AppCompatActivity{
                                         updateTitleAll(driverInfoList, getResources().getString(R.string.driver));
                                     }
                                     else{
-                                        Toast.makeText(MngInfoActivity.this, "failed", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MngInfoActivity.this, "삭제를 하지 못했습니다..", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
@@ -226,7 +226,7 @@ public class MngInfoActivity extends AppCompatActivity{
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
-                                        Toast.makeText(MngInfoActivity.this, "Successfully deleted", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MngInfoActivity.this, "성공적으로 삭제했습니다.", Toast.LENGTH_SHORT).show();
 
                                         adminCodeContainer.removeView(codeInfo);
                                         adminInfoList.remove(codeInfo);
@@ -234,14 +234,14 @@ public class MngInfoActivity extends AppCompatActivity{
                                         updateTitleAll(adminInfoList, getResources().getString(R.string.admin_abbrev));
                                     }
                                     else{
-                                        Toast.makeText(MngInfoActivity.this, "failed", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MngInfoActivity.this, "삭제를 하지 못했습니다.", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
                         }
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -265,7 +265,7 @@ public class MngInfoActivity extends AppCompatActivity{
             public void onSuccess(Void unused) {
                 addAdminCode(code);
 
-                String toast = "Admin code " + code + " added";
+                String toast = "관리자 코드  " + code + "가 추가되었습니다.";
 
                 Toast.makeText(getApplicationContext(), toast, Toast.LENGTH_LONG).show();
             }
@@ -278,7 +278,7 @@ public class MngInfoActivity extends AppCompatActivity{
             @Override
             public void onSuccess(Void unused) {
                 addDriverCode(code);
-                String toast = "Driver code " + code + " added";
+                String toast = "운전자 코드 " + code + "가 추가되었습니다.";
 
                 Toast.makeText(getApplicationContext(), toast, Toast.LENGTH_LONG).show();
             }
