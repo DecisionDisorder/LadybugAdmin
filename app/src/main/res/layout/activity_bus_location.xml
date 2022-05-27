@@ -41,12 +41,11 @@
             android:id="@+id/busLineContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
-        <LinearLayout
+        <FrameLayout
             android:id="@+id/busDrawContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-        </LinearLayout>
+            android:layout_height="match_parent">
+        </FrameLayout>
     </FrameLayout>
 
 </LinearLayout>

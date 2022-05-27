@@ -11,7 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.sql.Time;
 import java.util.ArrayList;
@@ -21,7 +23,7 @@ import java.util.TimerTask;
 
 public class BusLocationActivity extends AppCompatActivity {
 
-    private LinearLayout busLayout;
+    private FrameLayout busLayout;
     private BusLineView busLineView;
     private BusView[] busViewsList = new BusView[3];
 
@@ -56,7 +58,7 @@ public class BusLocationActivity extends AppCompatActivity {
     }
 
     private void getBusLocationFromServer() {
-        Timer timer = new Timer();
+        /*Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
@@ -72,7 +74,20 @@ public class BusLocationActivity extends AppCompatActivity {
                 });
             }
         };
-        timer.schedule(timerTask, 0, 2000);
+        timer.schedule(timerTask, 0, 2000);*/
+        FirebaseDatabase.getInstance().getReference("Location").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String message = snapshot.getValue().toString();
+                busLocations = getBusLocations(message);
+                setBusLocations();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void setBusLocations() {
