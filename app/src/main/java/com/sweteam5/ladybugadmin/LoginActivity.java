@@ -54,8 +54,7 @@ public class LoginActivity extends AppCompatActivity {
                                 if (child.next().getKey().equals(checkId.getText().toString())) {
                                     Toast.makeText(getApplicationContext(), "로그인!", Toast.LENGTH_LONG).show();
 
-                                    Intent intent = null;
-                                    intent = new Intent(getApplicationContext(), AdminMainActivity.class);
+                                    Intent intent = new Intent(getApplicationContext(), AdminMainActivity.class);
 
                                     if (intent != null)
                                         startActivity(intent);

@@ -108,7 +108,7 @@ public class DriverActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if(task.isSuccessful()) {
                     System.out.println(task.getResult().getValue().toString());
-                    busOperationCheckList = getAvailableBusList(task.getResult().getValue().toString());
+                    busOperationCheckList = FirebaseConverter.convertString2BoolList(task.getResult().getValue().toString());
 
                     getAvailableBus();
                 }
@@ -116,17 +116,7 @@ public class DriverActivity extends AppCompatActivity {
         });
     }
 
-    private boolean[] getAvailableBusList(String codeInDictionary) {
-        String subStr = codeInDictionary.substring(codeInDictionary.indexOf(',') + 2);
-        subStr = subStr.replaceAll("]", "");
-        subStr = subStr.replaceAll(" ", "");
-        String[] res = subStr.split(",");
-        boolean[] result = new boolean[res.length];
-        for (int i = 0; i < result.length; i++)
-            result[i] = Boolean.parseBoolean(res[i]);
 
-        return result;
-    }
 
     private void getAvailableBus() {
         ArrayList<Integer> operationableBus = new ArrayList<>();

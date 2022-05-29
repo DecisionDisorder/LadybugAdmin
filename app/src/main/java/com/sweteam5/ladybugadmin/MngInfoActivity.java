@@ -115,7 +115,7 @@ public class MngInfoActivity extends AppCompatActivity{
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if(task.isSuccessful()) {
                     System.out.println(task.getResult().getValue().toString());
-                    String[] codes = getCodeList(task.getResult().getValue().toString());
+                    String[] codes = FirebaseConverter.convertDict2CodeList(task.getResult().getValue().toString());
 
                     for(int i = 0; i < codes.length; i++) {
                         adminCodes.add(codes[i]);
@@ -131,7 +131,7 @@ public class MngInfoActivity extends AppCompatActivity{
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if(task.isSuccessful()) {
                     System.out.println(task.getResult().getValue().toString());
-                    String[] codes = getCodeList(task.getResult().getValue().toString());
+                    String[] codes = FirebaseConverter.convertDict2CodeList(task.getResult().getValue().toString());
 
                     for(int i = 0; i < codes.length; i++) {
                         driverCodes.add(codes[i]);
@@ -155,14 +155,6 @@ public class MngInfoActivity extends AppCompatActivity{
             addDriverCode();
             driverInfoList.get(i).initCode(driverCodes.get(i));
         }
-    }
-
-    private String[] getCodeList(String codeInDictionary) {
-        String[] list = codeInDictionary.split(",");
-        for(int i = 0; i < list.length; i++) {
-            list[i] = list[i].replaceAll("[^0-9]", "");
-        }
-        return list;
     }
 
     private void addDriverCode() {

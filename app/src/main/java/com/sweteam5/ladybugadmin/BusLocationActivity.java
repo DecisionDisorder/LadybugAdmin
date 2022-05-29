@@ -79,7 +79,8 @@ public class BusLocationActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String message = snapshot.getValue().toString();
-                busLocations = getBusLocations(message);
+                System.out.println(message);
+                busLocations = FirebaseConverter.convertMsg2BusLocation(message);
                 setBusLocations();
             }
 
@@ -102,20 +103,5 @@ public class BusLocationActivity extends AppCompatActivity {
         }
     }
 
-    private int[] getBusLocations(String message) {
-        int[] result = new int[3];
-        message = message.trim();
-        int index = Integer.parseInt(message.substring(message.indexOf('_') + 1, message.indexOf('_') + 2)) - 1;
-        result[index] = Integer.parseInt(message.substring(message.indexOf('=') + 1, message.indexOf(',')));
-        message = message.substring(message.indexOf(',') + 1);
 
-        index = Integer.parseInt(message.substring(message.indexOf('_') + 1, message.indexOf('_') + 2)) - 1;
-        result[index] = Integer.parseInt(message.substring(message.indexOf('=') + 1, message.indexOf(',')));
-        message = message.substring(message.indexOf(',') + 1);
-
-        index = Integer.parseInt(message.substring(message.indexOf('_') + 1, message.indexOf('_') + 2)) - 1;
-        result[index] = Integer.parseInt(message.substring(message.indexOf('=') + 1, message.indexOf('}')));
-
-        return result;
-    }
 }
