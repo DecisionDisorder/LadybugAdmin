@@ -3,14 +3,9 @@ package com.sweteam5.ladybugadmin;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -18,10 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.auth.User;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class noticeAdapter extends RecyclerView.Adapter<noticeAdapter.noticeViewHolder> {
@@ -57,7 +48,7 @@ public class noticeAdapter extends RecyclerView.Adapter<noticeAdapter.noticeView
         holder.title.setOnClickListener(new View.OnClickListener() {//click the title to modify the notice
             @Override
             public void onClick(View view) {
-                NoticeMngActivity.dm.findmodifyNotice(activity, context, notice.title);
+                NoticeMngActivity.dm.findModifyNotice(activity, context, notice.title);
                 //activity.finish();
                 /**Intent intent = new Intent(context, NoticeWriteActivity.class);//error
                 intent.putExtra("contentBundle", contentBundle);

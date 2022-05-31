@@ -2,6 +2,7 @@ package com.sweteam5.ladybugadmin;
 
 public class FirebaseConverter {
 
+    // Converts a boolean array composed of strings to an actual boolean array.
     public static boolean[] convertString2BoolList(String boolArray) {
         String subStr = boolArray.substring(boolArray.indexOf(',') + 2);
         subStr = subStr.replaceAll("]", "");
@@ -14,6 +15,7 @@ public class FirebaseConverter {
         return result;
     }
 
+    // Code is extracted from the dictionary form and returned to the string array.
     public static String[] convertDict2CodeList(String codeInDictionary) {
         String[] list = codeInDictionary.split(",");
         for(int i = 0; i < list.length; i++) {
@@ -22,6 +24,7 @@ public class FirebaseConverter {
         return list;
     }
 
+    // The bus location information of the string is converted into an int array and returned.
     public static int[] convertMsg2BusLocation(String message) {
         int[] result = new int[3];
         message = message.trim();

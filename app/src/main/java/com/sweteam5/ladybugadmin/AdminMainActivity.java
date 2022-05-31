@@ -15,6 +15,7 @@ public class AdminMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_main);
 
+        /* Entering the notification management Menu */
         TextView noticeMngTextView = findViewById(R.id.noticeMngTextview);
         noticeMngTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -24,6 +25,7 @@ public class AdminMainActivity extends AppCompatActivity {
             }
         });
 
+        /* Entering the bus location Menu */
         TextView busLocationTextView = findViewById(R.id.busLocationTextview);
         busLocationTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,6 +35,8 @@ public class AdminMainActivity extends AppCompatActivity {
             }
         });
 
+
+        /* Entering the manage information Menu */
         TextView mngInfoTextView = findViewById(R.id.mngInfoTextview);
         mngInfoTextView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,21 +1,13 @@
 package com.sweteam5.ladybugadmin;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -50,11 +42,11 @@ public class NoticeWriteActivity extends AppCompatActivity {
                 String content = contentEditText.getText().toString();//get title, contents, date
                 //dm = new DataManage();
                 if(DocumentID==null) {
-                    NoticeMngActivity.dm.uploadnotice(title, date, content);//push to store
+                    NoticeMngActivity.dm.uploadNotice(title, date, content);//push to store
                     finish();
                 }
                 else{
-                    NoticeMngActivity.dm.uploadmodification(activity, title, date, content, DocumentID);
+                    NoticeMngActivity.dm.uploadModification(activity, title, date, content, DocumentID);
                     finish();
                 }
 

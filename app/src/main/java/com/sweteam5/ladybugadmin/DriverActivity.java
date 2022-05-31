@@ -22,60 +22,54 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 public class DriverActivity extends AppCompatActivity {
-    private TextView locationTextView;
+    private TextView locationTextView;              // (TEST) GPS location textview
 
-    private boolean isInOperation = false;
-    private Spinner busNumberSpinner;
-    private TextView currentLocationTextView;
-    private TextView currentStateTextView;
-    private Button changeStatusButton;
+    private boolean isInOperation = false;          // Whether it's in operation
+    private Spinner busNumberSpinner;               // Dropdown of bus number that driver is driving
+    private TextView currentLocationTextView;       // Current location of bus in text
+    private TextView currentStateTextView;          // Display whether it's in operation in text
+    private Button changeStatusButton;              // Change the operation state
 
-    LocationListener locationListener;
-    private LocationManager locationManager = null;
+    LocationListener locationListener;              // GPS location listener
+    private LocationManager locationManager = null; // Location manager for GPS feature
 
-    private LinearLayout startStationContainer;
-    private LinearLayout currentLocationContainer;
-    private Spinner startStationSpinner;
-    private boolean isPassedStartingPoint;
+    private LinearLayout startStationContainer;     // Group of starting station selection
+    private LinearLayout currentLocationContainer;  // Group of current station display
+    private Spinner startStationSpinner;            // Dropdown of starting station selection
+    private boolean isPassedStartingPoint;          // Check if driver have passed the starting point
 
-    private BusLocator busLocator;
-    private StationDataManager stationDataManager;
+    private BusLocator busLocator;                  // Bus location calculator
+    private StationDataManager stationDataManager;  // Station data loading instance
 
-    private boolean[] busOperationCheckList;
+    private boolean[] busOperationCheckList;        // Boolean array to check if the bus is running
 
-    private final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 1001;
+    private final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 1001; // Location Permission code
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver);
 
+        // Caching views that is drawn in activity
         locationTextView = findViewById(R.id.locationTextView);
-
         busNumberSpinner = findViewById(R.id.busNumberSpinner);
         currentStateTextView = findViewById(R.id.currentStateTextView);
         changeStatusButton = findViewById(R.id.changeStatusButton);
         currentLocationTextView = findViewById(R.id.currentLocationTextView);
-
         startStationContainer = findViewById(R.id.startStationContainer);
         currentLocationContainer = findViewById(R.id.currentLocationContainer);
         startStationSpinner = findViewById(R.id.startStationSpinner);
 
-
+        // Set operation state button listener
         changeStatusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,15 +77,23 @@ public class DriverActivity extends AppCompatActivity {
             }
         });
 
+        // Permission Check for fine GPS feature
         permissionCheckGps();
+
+        // Initialize the station data information
         stationDataManager = new StationDataManager();
         stationDataManager.init(this);
 
+        // Initialize bus location calculator
         busLocator = new BusLocator(stationDataManager);
+
+        // Initialize starting station list dropdown
         initStartStationSpinner();
 
+        // Initialize operation state
         setOperation(false);
 
+        // Get the bus service status list.
         setOperationBus();
     }
 
@@ -99,53 +101,56 @@ public class DriverActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
 
+        // When the activity ends, stop processing is performed.
         setOperation(false);
     }
 
+    // Get and set the bus service status list from Firebase
     private void setOperationBus() {
         FirebaseDatabase.getInstance().getReference("Operation").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if(task.isSuccessful()) {
-                    System.out.println(task.getResult().getValue().toString());
                     busOperationCheckList = FirebaseConverter.convertString2BoolList(task.getResult().getValue().toString());
 
-                    getAvailableBus();
+                    updateAvailableBus();
                 }
             }
         });
     }
 
-
-
-    private void getAvailableBus() {
+    // Update the list of available bus numbers.
+    private void updateAvailableBus() {
+        // Generate a list of available bus numbers
         ArrayList<Integer> operationableBus = new ArrayList<>();
         for(int i = 0; i < busOperationCheckList.length; i++) {
             if(!busOperationCheckList[i])
                 operationableBus.add(i + 1);
         }
 
-        int[] busNumberArr = new int[operationableBus.size()];
-        for(int i = 0; i < operationableBus.size(); i++)
-            busNumberArr[i] = operationableBus.get(i);
+        // Convert to Integer class array
+        Integer[] busNumbers = new Integer[operationableBus.size()];
+        for (int i = 0; i < operationableBus.size(); i++)
+            busNumbers[i] = Integer.valueOf(operationableBus.get(i));
 
-        Integer[] busNumbers = new Integer[busNumberArr.length];
-        for (int i = 0; i < busNumberArr.length; i++)
-            busNumbers[i] = Integer.valueOf(busNumberArr[i]);
-
+        // Set the available bus number to the drop-down
         ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, busNumbers);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         busNumberSpinner.setAdapter(adapter);
     }
 
+    // Initialize starting station dropdown
     private void initStartStationSpinner() {
+        // Get station name array from station data manager
         String[] items = stationDataManager.getStationNameArray();
 
+        // Set spinner dropdown adapter
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         startStationSpinner.setAdapter(adapter);
     }
 
+    // Set operation state
     private void setOperation(boolean active) {
         isInOperation = active;
         setBusOperationToServer(active);
@@ -183,13 +188,16 @@ public class DriverActivity extends AppCompatActivity {
             stopGetLocation();
             busLocator.initStartIndex(-1, getCurrentBusNum());
         }
+        // Set bus number editable/uneditable
         busNumberSpinner.setEnabled(!active);
     }
 
+    // Get selected bus number from spinner(drop-down)
     public String getCurrentBusNum() {
         return busNumberSpinner.getSelectedItem().toString();
     }
 
+    // Send whether the current bus number is running or not to the server
     private void setBusOperationToServer(boolean active) {
         String busNum = getCurrentBusNum();
         DatabaseReference db = FirebaseDatabase.getInstance().getReference("Operation");
@@ -201,6 +209,7 @@ public class DriverActivity extends AppCompatActivity {
         });
     }
 
+    // Check GPS Permissions (Android policy)
     private void permissionCheckGps() {
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
@@ -215,6 +224,7 @@ public class DriverActivity extends AppCompatActivity {
         }
     }
 
+    // GPS permission acquisition callback function
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -230,6 +240,7 @@ public class DriverActivity extends AppCompatActivity {
         }
     }
 
+    // Event handler start method that receives GPS location information
     private void startGetLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -246,17 +257,20 @@ public class DriverActivity extends AppCompatActivity {
                     + ", Index: " + busLocator.getCurrentIndex());
 
         }
+        // Start GPS location update event listener (400ms interval)
         locationListener = gpsLocationListener;
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 400, 1, locationListener);
 
     }
 
+    // Stop receiving GPS location
     private void stopGetLocation() {
         if(locationManager != null){
             locationManager.removeUpdates(locationListener);
         }
     }
 
+    // GPS event call back method
     final LocationListener gpsLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(@NonNull Location location) {
@@ -264,12 +278,17 @@ public class DriverActivity extends AppCompatActivity {
             double latitude = location.getLatitude();
             locationTextView.setText( "위도 : " + latitude+ ", 경도 : " + longitude + ", 거리 : " + busLocator.getDistance(location)
                     + ", Index: " + busLocator.getCurrentIndex());
+            // Set current location of bus
             setCurrentLocation(location);
         }
     };
 
+    // Set current location of bus with current GPS location
     private void setCurrentLocation(Location currentLocation) {
+        // Check if the bus has passed the departure station
         if(!isPassedStartingPoint) {
+            // If the bus approaches the departure station within the error range,
+            // change the isPassedStartingPoint to true and update the current location information.
             double dist = busLocator.getDistance(currentLocation);
             if(dist < BusLocator.ERROR_RANGE) {
                 currentLocationTextView.setText(busLocator.getCurrentStationName());
@@ -278,7 +297,11 @@ public class DriverActivity extends AppCompatActivity {
             }
         }
         else {
+            //If it is in a normal driving state(already passed starting station), update the index.
             busLocator.setCurrentIndex(currentLocation, getCurrentBusNum());
+
+            // If the currentIndex is an even number, it displays only the name of the station,
+            // and if it is an odd number, it indicates where it is moving from.
             int currentIndex = busLocator.getCurrentIndex();
             if(currentIndex % 2 == 0)
                 currentLocationTextView.setText(busLocator.getCurrentStationName());

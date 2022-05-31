@@ -13,11 +13,11 @@ import android.widget.TextView;
 
 public class CodeInfo extends LinearLayout {
 
-    private MngInfoActivity mngInfoActivity;
-    private MngInfoActivity.CodeType codeType;
-    public EditText codeEditText;
-    public ImageButton deleteCodeButton;
-    private TextView codeTextView;
+    private MngInfoActivity mngInfoActivity;    // Parent activity caching
+    private MngInfoActivity.CodeType codeType;  // Code type of this instance (driver code / bus code)
+    public EditText codeEditText;               // EditText view of the code
+    public ImageButton deleteCodeButton;        // Delete button of this layer group
+    private TextView codeTextView;              // Title TextView of code group
 
     public CodeInfo(Context context, AttributeSet attrs, String title,
                     MngInfoActivity.CodeType codeType, MngInfoActivity mngInfoActivity) {
@@ -39,6 +39,7 @@ public class CodeInfo extends LinearLayout {
         init(context, title);
     }
 
+    // Initialize the setting data
     private void init(Context context, String title){
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.info_code_layout, this, true);
@@ -47,6 +48,7 @@ public class CodeInfo extends LinearLayout {
         setTitle(title);
         codeEditText = findViewById(R.id.codeEditText);
 
+        // Set delete button listener
         deleteCodeButton = findViewById(R.id.deleteCodeButton);
         deleteCodeButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -56,14 +58,17 @@ public class CodeInfo extends LinearLayout {
         });
     }
 
+    // Set the title of code layout group
     public void setTitle(String title) {
         codeTextView.setText(title);
     }
 
+    // Get Code from CodeEditText in string type
     public String getCodeOnEditText() {
         return codeEditText.getText().toString();
     }
 
+    // Set code to CodeEditText and make it uneditable
     public void initCode(String code) {
         codeEditText.setText(code);
         codeEditText.setInputType(InputType.TYPE_NULL);

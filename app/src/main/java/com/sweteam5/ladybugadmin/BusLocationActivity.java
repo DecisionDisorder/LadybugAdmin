@@ -23,25 +23,28 @@ import java.util.TimerTask;
 
 public class BusLocationActivity extends AppCompatActivity {
 
-    private FrameLayout busLayout;
-    private BusLineView busLineView;
-    private BusView[] busViewsList = new BusView[3];
+    private FrameLayout busLayout;      // Layout of bus will be drawn
+    private BusLineView busLineView;    // Line drawing View instance
+    private BusView[] busViewsList = new BusView[3]; // Array for storing drawn bus views
 
-    private int[] busLocations;
+    private int[] busLocations;         // Index array of the current location of the buses
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bus_location);
 
+        // Create bus line view instance and add to layout
         busLayout = findViewById(R.id.busDrawContainer);
         busLineView = new BusLineView(this);
         FrameLayout lineLayout = findViewById(R.id.busLineContainer);
         lineLayout.addView(busLineView);
 
+        // Get Bus location from Firebase Realtime Database
         getBusLocationFromServer();
     }
 
+    // Draw bus image, add to layout, and return the instance
     private void drawBus(int locIndex, int busNum)
     {
         BusView busView = new BusView(this, busLineView);
@@ -51,52 +54,41 @@ public class BusLocationActivity extends AppCompatActivity {
         busViewsList[busNum].updateLocation(locIndex);
     }
 
+    // Delete bus image from bus container layout
     private void deleteBus(int busNum) {
         busViewsList[busNum].stopAnimation();
         busLayout.removeView(busViewsList[busNum]);
         busViewsList[busNum] = null;
     }
 
+    // The location index of the bus is retrieved from the firebase in real time.
     private void getBusLocationFromServer() {
-        /*Timer timer = new Timer();
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                FirebaseDatabase.getInstance().getReference("Location").orderByKey().get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DataSnapshot> task) {
-                        if(task.isSuccessful()) {
-                            String message = task.getResult().getValue().toString();
-                            busLocations = getBusLocations(message);
-                            setBusLocations();
-                        }
-                    }
-                });
-            }
-        };
-        timer.schedule(timerTask, 0, 2000);*/
+        // The data in the "Location" path of the firebase is called back when there is a change.
         FirebaseDatabase.getInstance().getReference("Location").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // The string data read from the server is converted into an int-type array
+                // to update the location of all buses.
                 String message = snapshot.getValue().toString();
-                System.out.println(message);
                 busLocations = FirebaseConverter.convertMsg2BusLocation(message);
                 setBusLocations();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) { }
         });
     }
 
+    // Update the location of the bus according to the conditions and redraw it.
     private void setBusLocations() {
         for(int i = 0; i < busViewsList.length; i++) {
+            // If the bus is switched to a stop(not driving), delete the bus.
             if(busViewsList[i] != null && busLocations[i] == -1)
                 deleteBus(i);
+            // If the bus is detected as newly created, add a bus image.
             else if(busViewsList[i] == null && busLocations[i] != -1)
                 drawBus(busLocations[i], i);
+            // If the bus is running, it will update the location.
             else if(busViewsList[i] != null && busLocations[i] != -1)
                 busViewsList[i].updateLocation(busLocations[i]);
 
