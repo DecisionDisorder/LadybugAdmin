@@ -4,9 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class NoticeInfo{
-    String title;
-    String date;
-    String content;
+    String title;   // Title string data
+    String date;    // Datetime string data
+    String content; // Content string data
 
     public NoticeInfo(String title,String date, String content) {
         this.title = title;

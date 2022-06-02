@@ -15,83 +15,81 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class noticeAdapter extends RecyclerView.Adapter<noticeAdapter.noticeViewHolder> {
-    Context context;
-    ArrayList<NoticeInfo> noticeArrayList;
-    private AppCompatActivity activity;
+public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.NoticeViewHolder> {
+    Context context;                        // Caching the context of an activity that uses the Adapter
+    ArrayList<NoticeInfo> noticeArrayList;  // Notice information array list
+    private AppCompatActivity activity;     // Caching an activity that uses the Adapter
 
-    public noticeAdapter(Context context, ArrayList<NoticeInfo> noticeArrayList, AppCompatActivity activity){
+    public NoticeAdapter(Context context, ArrayList<NoticeInfo> noticeArrayList, AppCompatActivity activity){
         this.context = context;
         this.noticeArrayList = noticeArrayList;
         this.activity = activity;
     }
 
-
+    // COMMENT
     @NonNull
     @Override
-    public noticeAdapter.noticeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public NoticeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context).inflate(R.layout.notice_group_layout, parent, false);
-        return new noticeViewHolder(v);
+        return new NoticeViewHolder(v);
     }
 
-
+    // COMMENT
     @Override
-    public void onBindViewHolder(@NonNull noticeAdapter.noticeViewHolder holder, int position) {//notice object
+    public void onBindViewHolder(@NonNull NoticeViewHolder holder, int position) {
+        // COMMENT
         NoticeInfo notice = noticeArrayList.get(position);
         holder.title.setText(notice.title);
         if(notice.date.length() > 14)
             holder.date.setText(notice.date.substring(0, notice.date.length() - 3));
         else
             holder.date.setText(notice.date);
-        //dm = new DataManage();
 
+        // COMMENT
         holder.title.setOnClickListener(new View.OnClickListener() {//click the title to modify the notice
             @Override
             public void onClick(View view) {
                 NoticeMngActivity.dm.findModifyNotice(activity, context, notice.title);
-                //activity.finish();
-                /**Intent intent = new Intent(context, NoticeWriteActivity.class);//error
-                intent.putExtra("contentBundle", contentBundle);
-                context.startActivity(intent);**/
             }
         });
 
-        //delete_button을 누를 시 삭제
+        // Set delete button listener
         holder.delete_button.setOnClickListener(v->{
             AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
             builder.setTitle("공지 삭제").setMessage("이 공지를 삭제하겠습니까?")
-                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            //String id = dm.getidfromFireBase("notice", "title", notice.title);
+            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    // Delete the notice from servers
+                    NoticeMngActivity.dm.deleteNotice(activity, notice.title);
+                }
+            })
+            .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) { }
+            });
 
-                            NoticeMngActivity.dm.deleteNotice(activity, notice.title);//delete the notice from server
-                        }
-                    })
-                    .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) { }
-                    });
-
+            // Show the dialogs
             AlertDialog dialog = builder.create();
             dialog.show();
 
-                });
-        //holder.content.setText(notice.content);
-
+        });
     }
 
 
+    // Get size of notice list
     @Override
     public int getItemCount() {
         return noticeArrayList.size();
     }
 
-    public static class noticeViewHolder extends RecyclerView.ViewHolder{
-        TextView title, date;
-        ImageButton delete_button;
+    public static class NoticeViewHolder extends RecyclerView.ViewHolder{
+        TextView title;             // Title of notice TextView
+        TextView date;              // Datetime of notice TextView
+        ImageButton delete_button;  // Delete of notice button
 
-        public noticeViewHolder(@NonNull View itemView) {
+        // Caching Views from layout
+        public NoticeViewHolder(@NonNull View itemView) {
             super(itemView);
             title =  itemView.findViewById(R.id.noticeTitleTextView);
             date = itemView.findViewById(R.id.noticeDateTimeTextView);

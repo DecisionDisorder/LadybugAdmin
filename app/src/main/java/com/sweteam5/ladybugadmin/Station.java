@@ -1,10 +1,10 @@
 package com.sweteam5.ladybugadmin;
 
 public class Station {
-    private String name;
-    private int index;
-    private double latitude;
-    private double longitude;
+    private String name;        // Name of the station
+    private int index;          // Index of the station
+    private double latitude;    // Latitude of the station
+    private double longitude;   // Longitude of the station
 
     public String getName() {
         return name;

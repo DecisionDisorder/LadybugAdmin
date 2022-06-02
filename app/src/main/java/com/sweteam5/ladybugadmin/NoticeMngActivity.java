@@ -1,55 +1,29 @@
 package com.sweteam5.ladybugadmin;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 
 public class NoticeMngActivity extends AppCompatActivity implements RecyclerViewInterface{
-    RecyclerView recyclerView;
-    ArrayList<NoticeInfo> noticeArrayList;
-    noticeAdapter noticeAdapter;
-    FirebaseFirestore db;
-    ProgressDialog progressDialog;
-    static DataManage dm;
+    RecyclerView recyclerView;              // RecyclerView that displays the notice list
+    ArrayList<NoticeInfo> noticeArrayList;  // Notice data array list
+    NoticeAdapter noticeAdapter;            // Notice Adapter for recycler view
+    ProgressDialog progressDialog;          // Progress dialog for loading from server
+    static DataManage dm;                   // Object communicating with the server about the notice
 
-    /*public void onResume() {
-        super.onResume();
-
-        noticeAdapter.notifyItemChanged(0);
-    }*/
-
-
+    // Refresh the list after user have been to another activity(NoticeWriteActivity).
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -57,22 +31,26 @@ public class NoticeMngActivity extends AppCompatActivity implements RecyclerView
         updateNoticeList();
     }
 
+    // Refresh the notice list with the latest
     public void updateNoticeList() {
         noticeArrayList = new ArrayList<NoticeInfo>();
-        noticeAdapter = new noticeAdapter(NoticeMngActivity.this, noticeArrayList, this);
+        noticeAdapter = new NoticeAdapter(NoticeMngActivity.this, noticeArrayList, this);
         recyclerView.setAdapter(noticeAdapter);
-        dm.showNoticeList(progressDialog, noticeArrayList, noticeAdapter);//get noticeList from server
+        // Get noticeList from server and set notice list with noticeAdapter
+        dm.showNoticeList(progressDialog, noticeArrayList, noticeAdapter);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notice_mng);
+        // Construct DataManage object
         dm = new DataManage();
 
-        String refe = (String) getIntent().getSerializableExtra("refresh");//command recyclerview refresh
+        // Get command recyclerview refresh
+        String refe = (String) getIntent().getSerializableExtra("refresh");
 
-        //attach notice list
+        // Attach notice list with loading progress dialog
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Fetching Data...");
@@ -81,22 +59,26 @@ public class NoticeMngActivity extends AppCompatActivity implements RecyclerView
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        // Initialize ArrayList, Adapter, and recycler view
         noticeArrayList = new ArrayList<NoticeInfo>();
-        noticeAdapter = new noticeAdapter(NoticeMngActivity.this, noticeArrayList, this);
+        noticeAdapter = new NoticeAdapter(NoticeMngActivity.this, noticeArrayList, this);
         recyclerView.setAdapter(noticeAdapter);
-        dm.showNoticeList(progressDialog, noticeArrayList, noticeAdapter);//get noticeList from server
+        dm.showNoticeList(progressDialog, noticeArrayList, noticeAdapter);
 
+        // Set write notice button listener
         Button writeBtn = findViewById(R.id.writeButton);
         writeBtn.setOnClickListener(new View.OnClickListener() {//click write button
            @Override
             public void onClick(View view) {
-                //finish();
+                // Start NoticeWriteActivity in "WRITE_NEW" mode
                 Intent intent = new Intent(getApplicationContext(), NoticeWriteActivity.class);
                 startActivityForResult(intent, NoticeWriteType.WRITE_NEW.ordinal());
-                noticeAdapter.notifyDataSetChanged();//refresh notice list
+                // Refresh notice list
+                noticeAdapter.notifyDataSetChanged();
             }
         });
 
+        // If there's some refresh command, refresh the notice list
         if(refe!=null){
             Log.d("NoticeMngActivity", refe);
             noticeAdapter.notifyDataSetChanged();//refresh notice list
@@ -104,17 +86,6 @@ public class NoticeMngActivity extends AppCompatActivity implements RecyclerView
 
     }
 
-
-    /**public void openNoticeModification(NoticeGroup noticeGroup) {
-
-        Intent intent = new Intent(getApplicationContext(), NoticeWriteActivity.class);
-        Bundle contentBundle = new Bundle();
-        //contentBundle.putString("title", noticeGroup.getTitle());
-        //contentBundle.putString("content", noticeGroup.getContent());
-        //contentBundle.putInt("index", noticeGroup.getIndex());
-        intent.putExtra("contentBundle", contentBundle);
-        startActivityForResult(intent, NoticeWriteType.MODIFICATION.ordinal());
-    }**/
     @Override
     public void onItemClick(int position){}
 }

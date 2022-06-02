@@ -11,14 +11,17 @@ import java.io.InputStream;
 
 public class StationDataManager {
 
+    // Station data array read from json file
     public Station[] stations;
 
+    // Read station data from json file and initialize it
     public boolean init(Context context) {
         String json = getJsonString(context);
         boolean result = parseJson(json);
         return result;
     }
 
+    // Read json data from json tile
     private String getJsonString(Context context) {
         String json = "";
 
@@ -40,6 +43,7 @@ public class StationDataManager {
         return json;
     }
 
+    // Parse string typed json data to Station object array and returns true if successful.
     private boolean parseJson(String json) {
         try {
             JSONObject jsonObject = new JSONObject(json);
@@ -65,6 +69,7 @@ public class StationDataManager {
         }
     }
 
+    // Get Station name array from station data array
     public String[] getStationNameArray() {
         String[] list = new String[stations.length];
         for(int i = 0; i < list.length; i++)

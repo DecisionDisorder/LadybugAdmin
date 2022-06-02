@@ -22,7 +22,9 @@ import java.util.Iterator;
 
 public class LoginActivity extends AppCompatActivity {
 
+    // Firebase instance for admin code to communicate with Firebase Realtime Database
     private DatabaseReference databaseReference_admin;
+    // Firebase instance for driver code to communicate with Firebase Realtime Database
     private DatabaseReference databaseReference_driver;
 
     @Override
@@ -30,27 +32,28 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // Get instances from Firebase by path
         databaseReference_admin = FirebaseDatabase.getInstance().getReference("admin");
         databaseReference_driver = FirebaseDatabase.getInstance().getReference("driver");
 
+        // Set views that is drawn in activity
         EditText checkId = findViewById(R.id.checkId);
-
         Button loginButton = findViewById(R.id.loginButton);
-        RadioGroup loginType = findViewById(R.id.enterModeType);
         RadioButton radAdminMode = findViewById(R.id.radAdmin);
         RadioButton radDriverMode = findViewById(R.id.radDriver);
 
+        // Set login button listener
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                // If login type is admin, get admin code and compare with user's input
                 if (radAdminMode.isChecked()) {
                     databaseReference_admin.addListenerForSingleValueEvent(new ValueEventListener() {
-
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
                             while (child.hasNext()) {
+                                // If the code is valid, start the admin menu activity with toast message
                                 if (child.next().getKey().equals(checkId.getText().toString())) {
                                     Toast.makeText(getApplicationContext(), "로그인!", Toast.LENGTH_LONG).show();
 
@@ -63,23 +66,22 @@ public class LoginActivity extends AppCompatActivity {
                                     return;
                                 }
                             }
+                            // If code is not valid, show the toast message.
                             Toast.makeText(getApplicationContext(), "존재하지 않는 아이디입니다.", Toast.LENGTH_LONG).show();
                         }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
+                        public void onCancelled(@NonNull DatabaseError error) { }
                     });
                 }
-
+                // If login type is driver, get driver code and compare with user's input
                 else if(radDriverMode.isChecked()){
                     databaseReference_driver.addListenerForSingleValueEvent(new ValueEventListener() {
-
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
                             while (child.hasNext()) {
+                                // If the code is valid, start the driver activity with toast message
                                 if (child.next().getKey().equals(checkId.getText().toString())) {
                                     Toast.makeText(getApplicationContext(), "로그인!", Toast.LENGTH_LONG).show();
 
@@ -93,13 +95,12 @@ public class LoginActivity extends AppCompatActivity {
                                     return;
                                 }
                             }
+                            // If code is not valid, show the toast message.
                             Toast.makeText(getApplicationContext(), "존재하지 않는 아이디입니다.", Toast.LENGTH_LONG).show();
                         }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
+                        public void onCancelled(@NonNull DatabaseError error) { }
                     });
                 }
             }
