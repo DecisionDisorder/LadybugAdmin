@@ -26,7 +26,7 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.NoticeView
         this.activity = activity;
     }
 
-    // COMMENT
+    // when noticeViewHolder called first
     @NonNull
     @Override
     public NoticeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -34,10 +34,10 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.NoticeView
         return new NoticeViewHolder(v);
     }
 
-    // COMMENT
+    // Viewholder of the recycler view
     @Override
     public void onBindViewHolder(@NonNull NoticeViewHolder holder, int position) {
-        // COMMENT
+        // set text the list of noitice
         NoticeInfo notice = noticeArrayList.get(position);
         holder.title.setText(notice.title);
         if(notice.date.length() > 14)
@@ -45,7 +45,7 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.NoticeView
         else
             holder.date.setText(notice.date);
 
-        // COMMENT
+        // when title was clicked go to modify the notice
         holder.title.setOnClickListener(new View.OnClickListener() {//click the title to modify the notice
             @Override
             public void onClick(View view) {
