@@ -7,7 +7,7 @@ Term project for Soft Engineering lecture
 - 한성구
 - 이소현
 
-[Demo Video]
+[Demo Video]  
 [![Video Label](http://img.youtube.com/vi/jtnqvbwanOg/0.jpg)](https://youtu.be/jtnqvbwanOg)
 
 ## Introduction
