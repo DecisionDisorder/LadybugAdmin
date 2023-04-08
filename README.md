@@ -11,8 +11,8 @@ Term project for Soft Engineering lecture
 [![Video Label](http://img.youtube.com/vi/jtnqvbwanOg/0.jpg)](https://youtu.be/jtnqvbwanOg)
 
 ## Introduction
-An application service that allows managers to create and view notices related to eco buses in Gachon University and inquire the location of buses.
-<img src="/screenshots/ladybug_bus.jpg">
+An application service that allows managers to create and view notices related to eco buses in Gachon University and inquire the location of buses.  
+<img src="/screenshots/ladybug_bus.jpg"></br>
 1. The administrator can create, modify, and read the notice related to the eco-bus.
 2. The administrator can manage login code information.
 3. The administrator can inquire the location of the bus.
