@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,7 +72,9 @@ public class LoginActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError error) { }
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Log.d("Login Error", error.getDetails());
+                        }
                     });
                 }
                 // If login type is driver, get driver code and compare with user's input
